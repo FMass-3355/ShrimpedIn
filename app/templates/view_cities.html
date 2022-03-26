@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+		<table>
+			<tr>
+				<th>City</th>
+				<th>Population</th>
+			</tr>
+			{% for city in cities %}
+			<tr>
+				<td>{{city.city}}</td>
+				<td>{{city.population}}</td>
+			</tr>
+			{% endfor %}
+{% endblock %}
