@@ -1,0 +1,35 @@
+<html>
+    <head>
+      <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 5px;
+        }
+        th {
+          text-align: left;
+        }
+        </style>
+        <title>Flask login demo</title>
+    </head>
+
+    <body>
+        <h1 style=color:red>Populations of cities </h1>
+        <hr>
+        <div>
+          <a href="/login">Login</a>
+          <a href="/logout">Logout</a>
+          <a href="/change_password">Change password</a>
+          <a href="/view_all">View All</a>
+          <a href="/sort_by_name">Sort by name</a>
+          <a href="/add">Add city</a>
+          <a href="/delete">Delete city</a>
+          <a href="/search">Search city</a>
+          <a href="/add_user">Add User</a>
+        </div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
