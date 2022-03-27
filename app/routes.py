@@ -135,14 +135,6 @@ def search_by_name():
             return render_template('not_found.html')
     return render_template('search.html', form=form)
 
-
-@app.route('/view_all')
-def view():
-    all = db.session.query(City).all()
-    print(all, file=sys.stderr)
-    return render_template('view_cities.html', cities=all)
-
-
 @app.route('/sort_by_name')
 def sort_by_name():
     all = db.session.query(City).order_by(City.city).all()
