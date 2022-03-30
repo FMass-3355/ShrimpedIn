@@ -26,7 +26,11 @@ class ChangePasswordForm(FlaskForm):
     new_pass_retype = PasswordField('Retype new password', validators=[DataRequired()])
     submit = SubmitField('Change password')
 
-class AddUserForm(FlaskForm):
+class CreateUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Create Account')
+
+class AccountRecovery(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    submit = SubmitField('Recover Account')

@@ -1,0 +1,14 @@
+<html>
+    <body>
+        <form>
+            <h2>Input Username</h2>
+            <p>
+                {{ form.username.label }}<br>
+                {{ form.username(size=32) }}
+            </p>
+
+            <p> {{ form.submit() }} </p>
+        </form>
+        <a href="/login"><button>Back</button></a>
+    </body>
+</html>
