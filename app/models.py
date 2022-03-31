@@ -2,14 +2,14 @@ from app import db, login
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# class City(db.Model):
-#     __tablename__ = 'cities'
-#     id = db.Column(db.Integer, primary_key=True)
-#     city = db.Column(db.String(64), unique=False, index=True)
-#     population = db.Column(db.Integer, unique=False)
+class City(db.Model):
+    __tablename__ = 'cities'
+    id = db.Column(db.Integer, primary_key=True)
+    city = db.Column(db.String(64), unique=False, index=True)
+    population = db.Column(db.Integer, unique=False)
 
-#     def __repr__(self):
-#         return '{} {}'.format(self.city, self.population)
+    def __repr__(self):
+        return '{} {}'.format(self.city, self.population)
 
 # User extends the flask_login defined UserMixin class.  UserMixin
 # provides default functionality that allows us to keep track of
@@ -33,3 +33,6 @@ class User(UserMixin, db.Model):
 @login.user_loader
 def load_user(id):
     return db.session.query(User).get(int(id))
+
+#need to add user roles
+#need to add job stuff

@@ -1,9 +1,9 @@
 from app import app
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import AddForm, AddUserForm, DeleteForm, SearchForm, LoginForm, ChangePasswordForm
+from app.forms import AddUserForm, LoginForm, ChangePasswordForm, AddForm, DeleteForm, SearchForm
 from app import db
-from app.models import City, User
+from app.models import User, City
 import sys
 #this is a test
 @app.route('/')
@@ -73,6 +73,53 @@ def is_admin():
             return False
     else:
         print('User not authenticated.', file=sys.stderr)
+
+@app.route('/add_user', methods=['GET', 'POST'])
+@login_required
+def add_user():
+    if is_admin():
+        form = AddUserForm()
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            if not db.session.query(User).filter_by(username=username).first():
+                user = User(username=username, role='user')
+                user.set_password(password)
+                db.session.add(user)
+                db.session.commit()
+        return render_template('add_user.html', form=form)
+    else:
+        return render_template('unauthorized.html')
+
+#will profile need get/post?
+@app.route('/profile')
+@login_required
+def profile():
+    # all = db.session.query(City).all()
+    user = db.session.query(User).filter_by(username=current_user.username).first()
+    print(user, file=sys.stderr)
+    #return render_template('view_cities.html', cities=all)
+
+@app.route('/job_search', methods=['GET', 'POST'])
+@login_required
+def job_search():
+    #form = SearchJobForm()
+    pass
+
+#Only recruiters can do this
+@app.route('/job_post', methods=['GET', 'POST'])
+@login_required
+def job_post():
+    #form = PostJobForm()
+    pass
+
+
+
+
+
+
+
+
 
 
 # Adding a city requires that a user be logged in
@@ -149,20 +196,4 @@ def sort_by_name():
     print(all, file=sys.stderr)
     return render_template('view_cities.html', cities=all)
 
-@app.route('/add_user', methods=['GET', 'POST'])
-@login_required
-def add_user():
-    if is_admin():
-        form = AddUserForm()
-        if form.validate_on_submit():
-            username = form.username.data
-            password = form.password.data
-            if not db.session.query(User).filter_by(username=username).first():
-                user = User(username=username, role='user')
-                user.set_password(password)
-                db.session.add(user)
-                db.session.commit()
-        return render_template('add_user.html', form=form)
-    else:
-        return render_template('unauthorized.html')
-        
+
