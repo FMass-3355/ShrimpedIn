@@ -1,7 +1,5 @@
-{% extends "base.html" %}
-
-{% block content %}
-    <h2>Input info</h2>
+<html>
+    <h2>Login</h2>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -14,4 +12,10 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-{% endblock %}
+
+    <body>
+            <a href="/"><button>Create Account</button></a><br><br>
+
+            <a href="/"><button>Account Recovery</button></a> 
+    </body>
+</html>
