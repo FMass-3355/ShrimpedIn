@@ -1,20 +1,28 @@
 from app import app
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import AddUserForm, LoginForm, ChangePasswordForm, AddForm, DeleteForm, SearchForm
+from app.forms import AccountRecovery, AddForm, DeleteForm, SearchForm, LoginForm, ChangePasswordForm, CreateUserForm
 from app import db
 from app.models import User, City
 import sys
-#this is a test
+
 @app.route('/')
 def index():
+    return redirect(url_for('login'))
+
+@app.route('/homepage')
+def homepage():
     return render_template('homepage.html')
+
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Authenticated users are redirected to home page.
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('homepage'))
     form = LoginForm()
     if form.validate_on_submit():
         # Query DB for user by username
@@ -25,13 +33,13 @@ def login():
         # login_user is a flask_login function that starts a session
         login_user(user)
         print('Login successful', file=sys.stderr)
-        return redirect(url_for('view'))
+        return redirect(url_for('homepage'))
     return render_template('login.html', form=form)
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
@@ -74,102 +82,6 @@ def is_admin():
     else:
         print('User not authenticated.', file=sys.stderr)
 
-@app.route('/add_user', methods=['GET', 'POST'])
-@login_required
-def add_user():
-    if is_admin():
-        form = AddUserForm()
-        if form.validate_on_submit():
-            username = form.username.data
-            password = form.password.data
-            if not db.session.query(User).filter_by(username=username).first():
-                user = User(username=username, role='user')
-                user.set_password(password)
-                db.session.add(user)
-                db.session.commit()
-        return render_template('add_user.html', form=form)
-    else:
-        return render_template('unauthorized.html')
-
-#will profile need get/post?
-@app.route('/profile')
-@login_required
-def profile():
-    # all = db.session.query(City).all()
-    user = db.session.query(User).filter_by(username=current_user.username).first()
-    print(user, file=sys.stderr)
-    #return render_template('view_cities.html', cities=all)
-
-@app.route('/job_search', methods=['GET', 'POST'])
-@login_required
-def job_search():
-    #form = SearchJobForm()
-    pass
-
-#Only recruiters can do this
-@app.route('/job_post', methods=['GET', 'POST'])
-@login_required
-def job_post():
-    #form = PostJobForm()
-    pass
-
-
-
-
-
-
-
-
-
-
-# Adding a city requires that a user be logged in
-@app.route('/add', methods=['GET', 'POST'])
-@login_required
-def add_record():
-    form = AddForm()
-    if form.validate_on_submit():
-        # Extract values from form
-        city_name = form.city.data
-        population = form.population.data
-
-        # Create a city record to store in the DB
-        c = City(city=city_name, population=population)
-
-        # add record to table and commit changes
-        db.session.add(c)
-        db.session.commit()
-
-        form.city.data = ''
-        form.population.data = ''
-        return redirect(url_for('add_record'))
-    return render_template('add.html', form=form)
-
-# Adding a city requires that a user be logged in AND is an admin
-@app.route('/delete', methods=['GET', 'POST'])
-@login_required
-def delete_record():
-    # Verifying that user is an admin
-    if is_admin():
-        form = DeleteForm()
-        if form.validate_on_submit():
-            # Query DB for matching record (we'll grab the first record in case
-            # there's more than one).
-            to_delete = db.session.query(City).filter_by(city = form.city.data).first()
-
-            # If record is found delete from DB table and commit changes
-            if to_delete is not None:
-                db.session.delete(to_delete)
-                db.session.commit()
-
-            form.city.data = ''
-            # Redirect to the view_all route (view function)
-            return redirect(url_for('view'))
-        return render_template('delete.html', form=form)
-    # Tell non-admin user they're not authorized to access route.
-    else:
-        return render_template('unauthorized.html')
-
-
 @app.route('/search', methods=['GET', 'POST'])
 def search_by_name():
     form = SearchForm()
@@ -188,4 +100,26 @@ def sort_by_name():
     print(all, file=sys.stderr)
     return render_template('view_cities.html', cities=all)
 
+@app.route('/create_user', methods=['GET', 'POST'])
+def create_user():
+    form = CreateUserForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        if not db.session.query(User).filter_by(username=username).first():
+            user = User(username=username, role='user')
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+    all_usernames= db.session.query(User.username).all()
+    print(all_usernames, file=sys.stderr)
+    return render_template('create_user.html', form=form)
 
+@app.route('/account_recovery', methods=['GET', 'POST'])
+def recover_account():
+    form = AccountRecovery()
+    if form.validate_on_submit():
+        username = form.username.data
+        if db.session.query(User).filter_by(username=username).first():
+            print("Account Recovered")
+    return render_template('account_recovery.html', form=form)

@@ -1,6 +1,42 @@
 <html>
     <head>
       <style>
+        a.dropbtn {
+          color: white;
+          font-size: 16px;
+          padding: 10px;
+          border: none;
+          cursor: pointer;
+          color: purple;
+          text-decoration: none;
+        }
+
+        .dropdown {
+          position: relative;
+          display: inline-block;
+        }
+
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f1f1f1;
+          min-width: 160px;
+          overflow: auto;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+        }
+
+        .dropdown-content a {
+          color: black;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+        }
+
+        .dropdown a:hover {background-color: #ddd;}
+
+        .show {display: block;}
+        
         table, th, td {
           border: 1px solid black;
           border-collapse: collapse;
@@ -12,22 +48,46 @@
           text-align: left;
         }
         </style>
-        <title>Flask login demo</title>
+        <title>ShrimpedIn</title>
     </head>
 
     <body>
-        <h1 style=color:red>Populations of cities </h1>
         <hr>
         <div>
-          <a href="/login">Login</a>
-          <a href="/logout">Logout</a>
-          <a href="/change_password">Change password</a>
-          <a href="/add_user">Add User</a>
-          <!--<a href="/profile">Profile</a>-->
-          <!--<a href="/job_search">Job Search</a>-->
-          <!--<a href="/job_post">Post Job</a>-->
+          <a href="/homepage" class="dropbtn">Home</a>
+          <a href="#" class="dropbtn">Job Search</a>
+          <a href="#" class="dropbtn">Chat</a></button>
+          <a href="#" class="dropbtn">Profile</a></button>
+          <div class="dropdown">
+            <a onclick="myFunction()" class="dropbtn">Settings</button>
+            <div id="myDropdown" class="dropdown-content">
+              <a href="/logout">Logout</a>
+              <a href="/change_password">Change Password</a>
+            </div>
+          </div>
         </div>
         <hr>
         {% block content %}{% endblock %}
+        <script>
+          /* When the user clicks on the button, 
+          toggle between hiding and showing the dropdown content */
+          function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+          }
+          
+          // Close the dropdown if the user clicks outside of it
+          window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+              var dropdowns = document.getElementsByClassName("dropdown-content");
+              var i;
+              for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                  openDropdown.classList.remove('show');
+                }
+              }
+            }
+          }
+          </script>
     </body>
 </html>
