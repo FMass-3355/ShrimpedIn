@@ -1,9 +1,9 @@
 from app import app
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import AccountRecovery, AddForm, DeleteForm, SearchForm, LoginForm, ChangePasswordForm, CreateUserForm
+from app.forms import AccountRecovery, LoginForm, ChangePasswordForm, CreateUserForm
 from app import db
-from app.models import User, City
+from app.models import User
 import sys
 
 @app.route('/')
@@ -15,6 +15,7 @@ def homepage():
     return render_template('homepage.html')
 
 @app.route('/settings')
+@login_required
 def settings():
     return render_template('settings.html')
 
@@ -37,6 +38,7 @@ def login():
     return render_template('login.html', form=form)
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
@@ -82,25 +84,8 @@ def is_admin():
     else:
         print('User not authenticated.', file=sys.stderr)
 
-@app.route('/search', methods=['GET', 'POST'])
-def search_by_name():
-    form = SearchForm()
-    if form.validate_on_submit():
-        # Query DB table for matching name
-        record = db.session.query(City).filter_by(city = form.city.data).all()
-        if record:
-            return render_template('view_cities.html', cities=record)
-        else:
-            return render_template('not_found.html')
-    return render_template('search.html', form=form)
-
-@app.route('/sort_by_name')
-def sort_by_name():
-    all = db.session.query(City).order_by(City.city).all()
-    print(all, file=sys.stderr)
-    return render_template('view_cities.html', cities=all)
-
 @app.route('/create_user', methods=['GET', 'POST'])
+@login_required
 def create_user():
     form = CreateUserForm()
     if form.validate_on_submit():
@@ -116,6 +101,7 @@ def create_user():
     return render_template('create_user.html', form=form)
 
 @app.route('/account_recovery', methods=['GET', 'POST'])
+@login_required
 def recover_account():
     form = AccountRecovery()
     if form.validate_on_submit():
