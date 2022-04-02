@@ -17,6 +17,7 @@ class ChangePasswordForm(FlaskForm):
 class CreateUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
     submit = SubmitField('Create Account')
 
 class AccountRecovery(FlaskForm):

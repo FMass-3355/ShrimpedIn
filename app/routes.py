@@ -84,21 +84,22 @@ def is_admin():
     else:
         print('User not authenticated.', file=sys.stderr)
 
-@app.route('/create_user', methods=['GET', 'POST'])
+@app.route('/add_user', methods=['GET', 'POST'])
 @login_required
 def create_user():
     form = CreateUserForm()
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        if not db.session.query(User).filter_by(username=username).first():
-            user = User(username=username, role='user')
+        email = form.email.data
+        if not db.session.query(User).filter_by(email=email).first():
+            user = User(username=username, email=email, role='user')
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
     all_usernames= db.session.query(User.username).all()
     print(all_usernames, file=sys.stderr)
-    return render_template('create_user.html', form=form)
+    return render_template('add_user.html', form=form)
 
 @app.route('/account_recovery', methods=['GET', 'POST'])
 @login_required
