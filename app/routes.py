@@ -85,21 +85,44 @@ def is_admin():
         print('User not authenticated.', file=sys.stderr)
 
 @app.route('/add_user', methods=['GET', 'POST'])
-@login_required
 def create_user():
     form = CreateUserForm()
     if form.validate_on_submit():
+        fname = form.fname.data
+        lname = form.lname.data
         username = form.username.data
         password = form.password.data
         email = form.email.data
         if not db.session.query(User).filter_by(email=email).first():
-            user = User(username=username, email=email, role='user')
+            user = User(username=username, email=email, role='user', fname=fname, lname=lname)
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
     all_usernames= db.session.query(User.username).all()
     print(all_usernames, file=sys.stderr)
     return render_template('add_user.html', form=form)
+
+@app.route('/jobs')
+@login_required
+def jobs():
+    return render_template('jobs.html')
+
+@app.route('/profile')
+@login_required
+def profile():
+    if current_user.is_authenticated:
+        username = current_user.username
+        fname = current_user.fname
+        lname = current_user.lname
+        email = current_user.email
+        print(fname, file=sys.stderr)
+    
+    return render_template('profile.html', fname=fname, lname=lname, email=email, username=username)
+
+@app.route('/chat')
+@login_required
+def chat():
+    return render_template('chat.html')
 
 @app.route('/account_recovery', methods=['GET', 'POST'])
 @login_required
@@ -110,3 +133,4 @@ def recover_account():
         if db.session.query(User).filter_by(username=username).first():
             print("Account Recovered")
     return render_template('account_recovery.html', form=form)
+

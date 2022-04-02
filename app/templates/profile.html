@@ -1,3 +1,13 @@
 <h1 style="color: purple;">Profile</h1>
 
 {% extends "base.html" %}
+
+{% block content %}
+	<p>Username: {{ username }}</p><br>
+
+	<p>First Name: {{ fname }}</p><br>
+
+	<p>Last Name: {{ lname }}</p><br>
+
+	<p>Email: {{ email }}</p>
+{% endblock %}
