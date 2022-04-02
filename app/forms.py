@@ -18,8 +18,11 @@ class CreateUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
+    fname = StringField('First Name', validators=[DataRequired()])
+    lname = StringField('Last Name', validators=[DataRequired()])
     submit = SubmitField('Create Account')
 
 class AccountRecovery(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     submit = SubmitField('Recover Account')
+
