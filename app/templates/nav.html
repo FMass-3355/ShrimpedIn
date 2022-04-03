@@ -1,12 +1,57 @@
-
-
 <!-- Navigation bar using bootstrap -->
 
-<nav class="navbar navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <img src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
-        Bootstrap
-      </a>
+<!---->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+
+    <a class="navbar-brand">ShrimpedIn</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!--actual navbar-->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/homepage">Home</a>
+        </li>   
+
+        <li class="nav-item">
+          <a class="nav-link" href="/profile">Profile</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/jobs">Job Posting</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/chat">Messages</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/add_user">Create Another User</a>
+        </li>
+
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropwdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Account setting
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown"navbar>
+            <li class="nav=item">
+              <a class="nav-link" href="/change_password">Change Password</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+          </ul>
+        </li>
+
     </div>
-  </nav>
+
+
+  </div>
+</nav>

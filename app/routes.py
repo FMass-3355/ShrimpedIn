@@ -1,3 +1,4 @@
+import re
 from app import app
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -88,16 +89,18 @@ def is_admin():
 def create_user():
     form = CreateUserForm()
     if form.validate_on_submit():
-        fname = form.fname.data
-        lname = form.lname.data
+        fname = form.fname.data.capitalize()
+        lname = form.lname.data.capitalize()
         username = form.username.data
         password = form.password.data
         email = form.email.data
-        if not db.session.query(User).filter_by(email=email).first():
-            user = User(username=username, email=email, role='user', fname=fname, lname=lname)
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
+        if email.endswith('@southernct.edu'):
+            if not db.session.query(User).filter_by(email=email).first():
+                user = User(username=username, email=email, role='user', fname=fname, lname=lname)
+                user.set_password(password)
+                db.session.add(user)
+                db.session.commit()
+                flash('User Created Successfully.')
     all_usernames= db.session.query(User.username).all()
     print(all_usernames, file=sys.stderr)
     return render_template('add_user.html', form=form)
@@ -133,4 +136,6 @@ def recover_account():
         if db.session.query(User).filter_by(username=username).first():
             print("Account Recovered")
     return render_template('account_recovery.html', form=form)
+
+
 
