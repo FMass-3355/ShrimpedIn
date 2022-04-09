@@ -1,6 +1,7 @@
 from flask import Flask
 
 # New imports
+from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from dotenv import load_dotenv
@@ -35,7 +36,7 @@ login.login_view = 'login'
 
 # Add models
 from app import routes, models
-from app.models import User
+from app.models import *
 
 # Create DB schema
 db.create_all()
@@ -53,4 +54,19 @@ if user is None:
     reg_user = User(username='user', role = 'user')
     reg_user.set_password('csc330sp22')
     db.session.add(reg_user)
+    db.session.commit()
+
+user = User.query.filter_by(username='recruiter').first()
+if user is None:
+    rec_user = User(username='recruiter', role = 'recruiter')
+    rec_user.set_password('csc330sp22')
+    db.session.add(rec_user)
+    db.session.commit()
+
+#for sprint 3
+user = User.query.filter_by(username='faculty').first()
+if user is None:
+    fac_user = User(username='faculty', role = 'faculty')
+    fac_user.set_password('csc330sp22')
+    db.session.add(fac_user)
     db.session.commit()
