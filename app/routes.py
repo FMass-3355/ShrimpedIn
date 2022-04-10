@@ -137,5 +137,13 @@ def recover_account():
             print("Account Recovered")
     return render_template('account_recovery.html', form=form)
 
+@app.errorhandler(404)
+def error404(e):
+    return render_template('404.html')
+
+@app.errorhandler(500)
+def error500(e):
+    return render_template('500.html')
+
 
 
