@@ -1,8 +1,8 @@
-<h1 style="color: purple;">Profile</h1>
-
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container">
+	<h1 style="padding-bottom: 2.5%;">Profile</h1>
 	<p>Username: {{ username }}</p><br>
 
 	<p>First Name: {{ fname }}</p><br>
@@ -10,4 +10,5 @@
 	<p>Last Name: {{ lname }}</p><br>
 
 	<p>Email: {{ email }}</p>
+</div>
 {% endblock %}
