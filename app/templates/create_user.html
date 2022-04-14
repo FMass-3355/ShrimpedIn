@@ -1,21 +1,50 @@
 
 <html>
-    <body>
-        <h2>Account Creation</h2>
-        <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.username.label }}<br>
-                {{ form.username(size=32) }}
-            </p>
-            <p>
-                {{ form.password.label }}<br>
-                {{ form.password(size=32) }}
-            </p>
-            <p>{{ form.submit() }}</p>
-        </form>
-    
-        <a href="/login"><button>Back</button></a>
+    <style>
+        body, html 
+        {
+         height: 100%;
+         margin: 0%;
+         background-image:linear-gradient(to bottom, pink 60%, hotpink);
+        }
+    </style>
 
-    </body>
+    <head>
+        <title>ShrimpedIn</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles.css">
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" \
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class="container-fluid" style="padding-top: 25%;">
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <h1 style="text-align: center; padding-left: 10px;">Create Account</h1><br><br>
+                    <div class="row">
+                        <div class="col-md-6 offset-md-3">
+                            <form action="" method="post" novalidate>
+                                {{ form.hidden_tag() }}
+                                <p style="width: fit-content; margin: auto;">
+                                    {{ form.username.label }}<br>
+                                    {{ form.username(size=32) }}
+                                </p>
+        
+                                <p style="width: fit-content; margin: auto;">
+                                    {{ form.password.label }}<br>
+                                    {{ form.password(size=32) }}
+                                </p><br>
+                                        
+                                <p class="btn" style="display: flex; justify-content: center;"> {{ form.submit() }} </p>
+                                <br><hr style="width: 50%; margin: auto;"><br>
+                            </form>
+
+                            <a class="btn btn-outline-dark" href="/login" \
+                            style="display: flex; margin: auto; width: fit-content; background-color: white;">Back</a>
+                        </div>
+                    </div>
 </html>

@@ -121,9 +121,13 @@ def is_faculty():
     else:
         print('User not authenticated.', file=sys.stderr)
 
+
+'''
+Use by the admin to create new users
+'''
 @app.route('/add_user', methods=['GET', 'POST'])
-def create_user():
-    if is_admin() or not current_user:
+def add_user():
+    if is_admin():
         form = CreateUserForm()
         if form.validate_on_submit():
             fname = form.fname.data
@@ -140,6 +144,24 @@ def create_user():
         print(all_usernames, file=sys.stderr)
         return render_template('add_user.html', form=form)
     return render_template('invalid_credentials.html')
+
+@app.route('/create_user', methods=['GET', 'POST'])
+def create_user():
+        form = CreateUserForm()
+        if form.validate_on_submit():
+            fname = form.fname.data
+            lname = form.lname.data
+            username = form.username.data
+            password = form.password.data
+            email = form.email.data
+            if not db.session.query(User).filter_by(email=email).first():
+                user = User(username=username, email=email, role='user', fname=fname, lname=lname)
+                user.set_password(password)
+                db.session.add(user)
+                db.session.commit()
+        all_usernames= db.session.query(User.username).all()
+        print(all_usernames, file=sys.stderr)
+        return render_template('create_user.html', form=form)
 
 @app.route('/jobs')
 @login_required
