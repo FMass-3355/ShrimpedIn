@@ -123,7 +123,7 @@ def is_faculty():
 
 @app.route('/add_user', methods=['GET', 'POST'])
 def create_user():
-    if is_admin():
+    if is_admin() or not current_user:
         form = CreateUserForm()
         if form.validate_on_submit():
             fname = form.fname.data
@@ -144,7 +144,9 @@ def create_user():
 @app.route('/jobs')
 @login_required
 def jobs():
-    return render_template('jobs.html')
+    if current_user.is_authenticated:
+        title = db.session.query(Job).filter
+    return render_template('jobs.html', job_title=title)
 
 @app.route('/profile')
 @login_required
@@ -176,7 +178,7 @@ def recover_account():
 @app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
-    if is_recruiter():
+    if is_recruiter() or is_student() or is_admin():
         form = AddJob()
         if form.validate_on_submit():
             job_title = form.job_title.data
@@ -186,8 +188,8 @@ def add_job():
             job_posting = Job(job_title=job_title, company=company, job_description=description, url=url)
             db.session.add(job_posting)
             db.session.commit()
-            all_jobs= db.session.query(Job.job_title).all()
-            print(all_jobs, file=sys.stderr)
+            #all_jobs= db.session.query(Job.job_title).all()
+            #print(all_jobs, file=sys.stderr)
         return render_template('create_jobs.html', form=form)
     return render_template('invalid_credentials.html')
 
