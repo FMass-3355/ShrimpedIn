@@ -1,4 +1,4 @@
-import re
+from pystache import render
 from app import app
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -73,53 +73,7 @@ def change_password():
     '''
     return render_template('change_password.html', form = form)
 
-def is_admin():
-    '''
-    Helper function to determine if authenticated user is an admin.
-    '''
-    if current_user:
-        if current_user.role == 'admin':
-            return True
-        else:
-            return False
-    else:
-        print('User not authenticated.', file=sys.stderr)
 
-def is_recruiter():
-    '''
-    Helper function to determine if authenticated user is a recruiter.
-    '''
-    if current_user:
-        if current_user.role == 'recruiter':
-            return True
-        else:
-            return False
-    else:
-        print('User not authenticated.', file=sys.stderr)
-
-def is_student():
-    '''
-    Helper function to determine if authenticated user is a student.
-    '''
-    if current_user:
-        if current_user.role == 'student':
-            return True
-        else:
-            return False
-    else:
-        print('User not authenticated.', file=sys.stderr)
-
-def is_faculty():
-    '''
-    Helper function to determine if authenticated user is a faculty.
-    '''
-    if current_user:
-        if current_user.role == 'faculty':
-            return True
-        else:
-            return False
-    else:
-        print('User not authenticated.', file=sys.stderr)
 
 
 '''
@@ -217,3 +171,59 @@ def add_job():
 
 
 
+#@app.errorhandler('/error505')
+#def error505():
+    r#eturn render_template("505error.html")
+
+
+
+
+#STANDALONE FUNCTION SECTION
+###################################################################
+def is_admin():
+    '''
+    Helper function to determine if authenticated user is an admin.
+    '''
+    if current_user:
+        if current_user.role == 'admin':
+            return True
+        else:
+            return False
+    else:
+        print('User not authenticated.', file=sys.stderr)
+
+def is_recruiter():
+    '''
+    Helper function to determine if authenticated user is a recruiter.
+    '''
+    if current_user:
+        if current_user.role == 'recruiter':
+            return True
+        else:
+            return False
+    else:
+        print('User not authenticated.', file=sys.stderr)
+
+def is_student():
+    '''
+    Helper function to determine if authenticated user is a student.
+    '''
+    if current_user:
+        if current_user.role == 'student':
+            return True
+        else:
+            return False
+    else:
+        print('User not authenticated.', file=sys.stderr)
+
+def is_faculty():
+    '''
+    Helper function to determine if authenticated user is a faculty.
+    '''
+    if current_user:
+        if current_user.role == 'faculty':
+            return True
+        else:
+            return False
+    else:
+        print('User not authenticated.', file=sys.stderr)

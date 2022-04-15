@@ -5,6 +5,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # User extends the flask_login defined UserMixin class.  UserMixin
 # provides default functionality that allows us to keep track of
 # authenticated user
+
+
+
+
+#Model's Python file is used to create the database stuff
+#Please make sure to do db.create_all() 
+#User's Database
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)

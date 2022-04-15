@@ -28,7 +28,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 
 # Create database connection and associate it with the Flask application
 db = SQLAlchemy(app)
-
 login = LoginManager(app)
 
 # enables @login_required
@@ -62,6 +61,10 @@ if user is None:
     rec_user.set_password('csc330sp22')
     db.session.add(rec_user)
     db.session.commit()
+
+
+
+
 
 #for sprint 3
 user = User.query.filter_by(username='faculty').first()
