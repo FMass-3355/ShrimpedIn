@@ -1,4 +1,6 @@
 from pystache import render
+import re
+import requests
 from app import app
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -6,6 +8,17 @@ from app.forms import *
 from app import db
 from app.models import *
 import sys
+import json
+from dotenv import load_dotenv
+from os import environ
+from wtforms.validators import DataRequired
+
+#API 
+# Read values from .flaskenv
+API_KEY = environ.get('API_KEY')
+API_HOST = environ.get('API_HOST')
+API_URL = environ.get('API_URL')
+EMAIL = environ.get('EMAIL')
 
 @app.route('/')
 def index():
@@ -227,3 +240,40 @@ def is_faculty():
             return False
     else:
         print('User not authenticated.', file=sys.stderr)
+
+#API / SEARCH (API is on top of the file)
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    headers =   {'Host': API_HOST,
+                'User-Agent': EMAIL,
+                'Authorization-Key': API_KEY}
+    form = SearchForm()
+    if form.validate_on_submit():
+        city = form.city.data + '%20' + form.state.data
+        keyword = form.keyword.data
+        full_URL = f'{API_URL}?LocationName={city}&Keyword={keyword}&ResultsPerPage=50'
+        response = requests.get(full_URL, headers = headers)
+
+        if response.status_code == 200:
+            print('Success!', file = sys.stdout)
+        elif response.status_code == 404:
+            print('Not found.', file=sys.stdout)
+
+         # Extract title, location and URI from API and package as a list of
+         # objects (job_results)
+        response_json = response.json()
+        job_results = []
+        for item in response_json['SearchResult']['SearchResultItems']:
+            job = JobInfo()
+            job.URI = item['MatchedObjectDescriptor']['PositionURI']
+            job.title = item['MatchedObjectDescriptor']['PositionTitle']
+            job.location = item['MatchedObjectDescriptor']['PositionLocationDisplay']
+            job_results.append(job)
+
+         # display search results as an HTML table
+        return render_template('view_jobs.html', job_results=job_results)
+    else:
+        return render_template('search.html', form=form)
+
+
+
