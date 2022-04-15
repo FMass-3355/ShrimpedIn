@@ -2,7 +2,8 @@ FLASK_APP=main.py
 FLASK_DEBUG=1
 FLASK_RUN_PORT=8080
 FLASK_RUN_HOST=0.0.0.0
-MYSQL_IP='127.0.0.1'
+MYSQL_IP='*********'
 MYSQL_USER='root'
-MYSQL_PASS='FVMassimi3355!'
-MYSQL_DB='ShrimpedIn'
+MYSQL_PASS='*******'
+MYSQL_DB='********'
+
