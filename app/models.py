@@ -54,3 +54,10 @@ class Job(db.Model):
 @login.user_loader
 def load_user(id):
     return db.session.query(User).get(int(id))
+
+
+class JobInfo:
+    def __JobInfo__(title, URI, location):
+        title = title
+        URI = URI
+        location = location

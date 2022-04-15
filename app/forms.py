@@ -32,4 +32,10 @@ class AddJob(FlaskForm):
     job_description = StringField('Description', validators=[DataRequired()])
     url = StringField('URL', validators=[DataRequired()])
     submit = SubmitField('Submit')
+    
+class SearchForm(FlaskForm):
+     keyword = StringField('Keyword', validators=[DataRequired()])
+     city = StringField('City', validators=[DataRequired()])
+     state = StringField('State', validators=[DataRequired()])
+     submit = SubmitField('Search')
 
