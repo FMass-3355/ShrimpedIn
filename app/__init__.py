@@ -1,3 +1,5 @@
+from ensurepip import bootstrap
+from xml.dom.xmlbuilder import DOMEntityResolver
 from flask import Flask
 
 # New imports
@@ -7,6 +9,14 @@ from flask_login import LoginManager
 from dotenv import load_dotenv
 from os import environ
 import mysql.connector
+from flask_moment import Moment
+import requests
+import sys
+from wtforms.validators import DataRequired
+from flask_moment import Moment
+import json
+
+
 
 # force loading of environment variables
 load_dotenv('.flaskenv')
@@ -17,8 +27,18 @@ USERNAME = environ.get('MYSQL_USER')
 PASSWORD = environ.get('MYSQL_PASS')
 DB_NAME = environ.get('MYSQL_DB')
 
+#API 
+# Read values from .flaskenv
+API_KEY = environ.get('API_KEY')
+API_HOST = environ.get('API_HOST')
+API_URL = environ.get('API_URL')
+EMAIL = environ.get('EMAIL')
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'csc33O'
+bootstrap = Bootstrap(app)
+moment = Moment(app)
+
 
 # Specify the connection parameters/credentials for the database
 DB_CONFIG_STR = f"mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{IP}/{DB_NAME}"
@@ -70,3 +90,5 @@ if user is None:
     fac_user.set_password('csc330sp22')
     db.session.add(fac_user)
     db.session.commit()
+    
+
