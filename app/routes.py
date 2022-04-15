@@ -1,9 +1,10 @@
+import re
 from app import app
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import AccountRecovery, LoginForm, ChangePasswordForm, CreateUserForm
+from app.forms import *
 from app import db
-from app.models import User
+from app.models import *
 import sys
 
 @app.route('/')
@@ -84,28 +85,90 @@ def is_admin():
     else:
         print('User not authenticated.', file=sys.stderr)
 
+def is_recruiter():
+    '''
+    Helper function to determine if authenticated user is a recruiter.
+    '''
+    if current_user:
+        if current_user.role == 'recruiter':
+            return True
+        else:
+            return False
+    else:
+        print('User not authenticated.', file=sys.stderr)
+
+def is_student():
+    '''
+    Helper function to determine if authenticated user is a student.
+    '''
+    if current_user:
+        if current_user.role == 'student':
+            return True
+        else:
+            return False
+    else:
+        print('User not authenticated.', file=sys.stderr)
+
+def is_faculty():
+    '''
+    Helper function to determine if authenticated user is a faculty.
+    '''
+    if current_user:
+        if current_user.role == 'faculty':
+            return True
+        else:
+            return False
+    else:
+        print('User not authenticated.', file=sys.stderr)
+
+
+'''
+Use by the admin to create new users
+'''
 @app.route('/add_user', methods=['GET', 'POST'])
+def add_user():
+    if is_admin():
+        form = CreateUserForm()
+        if form.validate_on_submit():
+            fname = form.fname.data
+            lname = form.lname.data
+            username = form.username.data
+            password = form.password.data
+            email = form.email.data
+            if not db.session.query(User).filter_by(email=email).first():
+                user = User(username=username, email=email, role='user', fname=fname, lname=lname)
+                user.set_password(password)
+                db.session.add(user)
+                db.session.commit()
+        all_usernames= db.session.query(User.username).all()
+        print(all_usernames, file=sys.stderr)
+        return render_template('add_user.html', form=form)
+    return render_template('invalid_credentials.html')
+
+@app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
-    form = CreateUserForm()
-    if form.validate_on_submit():
-        fname = form.fname.data
-        lname = form.lname.data
-        username = form.username.data
-        password = form.password.data
-        email = form.email.data
-        if not db.session.query(User).filter_by(email=email).first():
-            user = User(username=username, email=email, role='user', fname=fname, lname=lname)
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
-    all_usernames= db.session.query(User.username).all()
-    print(all_usernames, file=sys.stderr)
-    return render_template('add_user.html', form=form)
+        form = CreateUserForm()
+        if form.validate_on_submit():
+            fname = form.fname.data
+            lname = form.lname.data
+            username = form.username.data
+            password = form.password.data
+            email = form.email.data
+            if not db.session.query(User).filter_by(email=email).first():
+                user = User(username=username, email=email, role='user', fname=fname, lname=lname)
+                user.set_password(password)
+                db.session.add(user)
+                db.session.commit()
+        all_usernames= db.session.query(User.username).all()
+        print(all_usernames, file=sys.stderr)
+        return render_template('create_user.html', form=form)
 
 @app.route('/jobs')
 @login_required
 def jobs():
-    return render_template('jobs.html')
+    if current_user.is_authenticated:
+        title = db.session.query(Job).filter
+    return render_template('jobs.html', job_title=title)
 
 @app.route('/profile')
 @login_required
@@ -133,4 +196,24 @@ def recover_account():
         if db.session.query(User).filter_by(username=username).first():
             print("Account Recovered")
     return render_template('account_recovery.html', form=form)
+
+@app.route('/create_job', methods=['GET', 'POST'])
+@login_required
+def add_job():
+    if is_recruiter() or is_student() or is_admin():
+        form = AddJob()
+        if form.validate_on_submit():
+            job_title = form.job_title.data
+            company = form.company.data
+            description = form.job_description.data
+            url = form.url.data
+            job_posting = Job(job_title=job_title, company=company, job_description=description, url=url)
+            db.session.add(job_posting)
+            db.session.commit()
+            #all_jobs= db.session.query(Job.job_title).all()
+            #print(all_jobs, file=sys.stderr)
+        return render_template('create_jobs.html', form=form)
+    return render_template('invalid_credentials.html')
+
+
 

@@ -6,3 +6,4 @@ MYSQL_IP='*********'
 MYSQL_USER='root'
 MYSQL_PASS='*******'
 MYSQL_DB='********'
+

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, StringField, PasswordField
+from wtforms import StringField, IntegerField, SubmitField, StringField, PasswordField, FloatField
 from wtforms.validators import DataRequired
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -25,4 +25,11 @@ class CreateUserForm(FlaskForm):
 class AccountRecovery(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     submit = SubmitField('Recover Account')
+
+class AddJob(FlaskForm):
+    job_title = StringField('Job Title', validators=[DataRequired()])
+    company = StringField('Company', validators=[DataRequired()])
+    job_description = StringField('Description', validators=[DataRequired()])
+    url = StringField('URL', validators=[DataRequired()])
+    submit = SubmitField('Submit')
 
