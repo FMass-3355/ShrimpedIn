@@ -231,7 +231,6 @@ def chat():
     return render_template('chat.html')
 #===================================================================================================
 @app.route('/account_recovery', methods=['GET', 'POST'])
-@login_required
 def recover_account():
     form = AccountRecovery()
     if form.validate_on_submit():

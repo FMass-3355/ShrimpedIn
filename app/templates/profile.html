@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="p-3 mb-2 text-white" style="background-color:hotpink; ">
+<section class="p-3 mb-2">
 	<div class="container">
 		
 		<img src="static/images/profile.png" width="220px" height="220px" style="display:block;margin:auto; padding: auto; border: 5px solid rgb(240, 38, 156);" class="center">
@@ -23,7 +23,7 @@
 		<div class="center">
 			<form method="POST" action="/upload" enctype="multipart/form-data">
 				<input type="file" name="file">
-				<button>Submit</button>
+				<button style="border-radius: 7.5%; border: 1px solid black;">Submit</button>
 			</form>
 		</div>
 	</div>
