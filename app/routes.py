@@ -1,5 +1,3 @@
-from pystache import render
-import re
 import requests
 from app import app
 from flask import render_template, redirect, url_for, flash
@@ -8,31 +6,40 @@ from app.forms import *
 from app import db
 from app.models import *
 import sys
-import json
 from dotenv import load_dotenv
 from os import environ
 from wtforms.validators import DataRequired
 
+
+#===================================================================================================
 #API 
 # Read values from .flaskenv
+#===================================================================================================
 API_KEY = environ.get('API_KEY')
 API_HOST = environ.get('API_HOST')
 API_URL = environ.get('API_URL')
 EMAIL = environ.get('EMAIL')
+#===================================================================================================
 
-@app.route('/')
-def index():
-    return redirect(url_for('login'))
-
+#===================================================================================================
+#Homepage
+#===================================================================================================
 @app.route('/homepage')
 def homepage():
     return render_template('homepage.html')
+#===================================================================================================
 
-@app.route('/settings')
-@login_required
-def settings():
-    return render_template('settings.html')
 
+#===================================================================================================
+#Logging in is the 
+#===================================================================================================
+@app.route('/')
+def index():
+    return redirect(url_for('login'))
+#===================================================================================================
+#===================================================================================================
+#Login Method
+#===================================================================================================
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Authenticated users are redirected to home page.
@@ -50,13 +57,30 @@ def login():
         print('Login successful', file=sys.stderr)
         return redirect(url_for('homepage'))
     return render_template('login.html', form=form)
-
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#Logging out
+#===================================================================================================
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
+#===================================================================================================
 
+
+
+
+
+#===================================================================================================
+#Settings
+#===================================================================================================
+@app.route('/settings')
+@login_required
+def settings():
+    return render_template('settings.html')
+#===================================================================================================
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
 def change_password():
@@ -85,10 +109,14 @@ def change_password():
     Verify that old password matches and the new password and retype also match.
     '''
     return render_template('change_password.html', form = form)
+#===================================================================================================
 
 
 
 
+#===================================================================================================
+#Add user
+#===================================================================================================
 '''
 Use by the admin to create new users
 '''
@@ -111,7 +139,10 @@ def add_user():
         print(all_usernames, file=sys.stderr)
         return render_template('add_user.html', form=form)
     return render_template('invalid_credentials.html')
-
+#===================================================================================================
+#===================================================================================================
+#Create User
+#===================================================================================================
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
         form = CreateUserForm()
@@ -129,14 +160,10 @@ def create_user():
         all_usernames= db.session.query(User.username).all()
         print(all_usernames, file=sys.stderr)
         return render_template('create_user.html', form=form)
-
-@app.route('/jobs')
-@login_required
-def jobs():
-    if current_user.is_authenticated:
-        title = db.session.query(Job).filter
-    return render_template('jobs.html', job_title=title)
-
+#===================================================================================================
+#===================================================================================================
+#Profile creation
+#===================================================================================================
 @app.route('/profile')
 @login_required
 def profile():
@@ -148,12 +175,32 @@ def profile():
         print(fname, file=sys.stderr)
     
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username)
+#===================================================================================================
 
+#===================================================================================================
+#Job adding Functionality
+#===================================================================================================
+@app.route('/jobs')
+@login_required
+def jobs():
+    if current_user.is_authenticated:
+        title = db.session.query(Job).filter
+    return render_template('jobs.html', job_title=title)
+#===================================================================================================
+
+
+
+
+
+
+#===================================================================================================
+#Messaging/Chat
+#===================================================================================================
 @app.route('/chat')
 @login_required
 def chat():
     return render_template('chat.html')
-
+#===================================================================================================
 @app.route('/account_recovery', methods=['GET', 'POST'])
 @login_required
 def recover_account():
@@ -164,6 +211,14 @@ def recover_account():
             print("Account Recovered")
     return render_template('account_recovery.html', form=form)
 
+
+
+
+
+#JOB SECTION
+#===================================================================================================
+#CREATE JOB
+#===================================================================================================
 @app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
@@ -181,14 +236,56 @@ def add_job():
             #print(all_jobs, file=sys.stderr)
         return render_template('create_jobs.html', form=form)
     return render_template('invalid_credentials.html')
+#===================================================================================================
+
+#===================================================================================================
+#API INFORMATION
+#===================================================================================================
+
+#API / SEARCH (API is on top of the file)
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    headers =   {'Host': API_HOST,
+                'User-Agent': EMAIL,
+                'Authorization-Key': API_KEY}
+    form = SearchForm()
+    if form.validate_on_submit():
+        city = form.city.data + '%20' + form.state.data
+        keyword = form.keyword.data
+        full_URL = f'{API_URL}?LocationName={city}&Keyword={keyword}&ResultsPerPage=50'
+        response = requests.get(full_URL, headers = headers)
+
+        if response.status_code == 200:
+            print('Success!', file = sys.stdout)
+        elif response.status_code == 404:
+            print('Not found.', file=sys.stdout)
+
+         # Extract title, location and URI from API and package as a list of
+         # objects (job_results)
+        response_json = response.json()
+        job_results = []
+        for item in response_json['SearchResult']['SearchResultItems']:
+            job = JobInfo()
+            job.URI = item['MatchedObjectDescriptor']['PositionURI']
+            job.title = item['MatchedObjectDescriptor']['PositionTitle']
+            job.location = item['MatchedObjectDescriptor']['PositionLocationDisplay']
+            job_results.append(job)
+
+         # display search results as an HTML table
+        return render_template('view_jobs.html', job_results=job_results)
+    else:
+        return render_template('search.html', form=form)
+#===================================================================================================
 
 
 
+#===================================================================================================
+#ERRORS
+#===================================================================================================
 #@app.errorhandler('/error505')
 #def error505():
     r#eturn render_template("505error.html")
-
-
+#===================================================================================================
 
 
 #STANDALONE FUNCTION SECTION
@@ -241,39 +338,10 @@ def is_faculty():
     else:
         print('User not authenticated.', file=sys.stderr)
 
-#API / SEARCH (API is on top of the file)
-@app.route('/search', methods=['GET', 'POST'])
-def search():
-    headers =   {'Host': API_HOST,
-                'User-Agent': EMAIL,
-                'Authorization-Key': API_KEY}
-    form = SearchForm()
-    if form.validate_on_submit():
-        city = form.city.data + '%20' + form.state.data
-        keyword = form.keyword.data
-        full_URL = f'{API_URL}?LocationName={city}&Keyword={keyword}&ResultsPerPage=50'
-        response = requests.get(full_URL, headers = headers)
 
-        if response.status_code == 200:
-            print('Success!', file = sys.stdout)
-        elif response.status_code == 404:
-            print('Not found.', file=sys.stdout)
 
-         # Extract title, location and URI from API and package as a list of
-         # objects (job_results)
-        response_json = response.json()
-        job_results = []
-        for item in response_json['SearchResult']['SearchResultItems']:
-            job = JobInfo()
-            job.URI = item['MatchedObjectDescriptor']['PositionURI']
-            job.title = item['MatchedObjectDescriptor']['PositionTitle']
-            job.location = item['MatchedObjectDescriptor']['PositionLocationDisplay']
-            job_results.append(job)
 
-         # display search results as an HTML table
-        return render_template('view_jobs.html', job_results=job_results)
-    else:
-        return render_template('search.html', form=form)
+
 
 
 
