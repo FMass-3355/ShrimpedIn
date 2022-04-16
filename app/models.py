@@ -1,5 +1,8 @@
 from app import db, login
 from flask_login import UserMixin
+import requests
+from flask import render_template, redirect, url_for, flash, request, session, jsonify, send_file
+from io import BytesIO
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # User extends the flask_login defined UserMixin class.  UserMixin
@@ -86,3 +89,14 @@ def load_user(id):
     return db.session.query(User).get(int(id))
 #===================================================================================================
 
+#===================================================================================================
+#Upload files   
+#====================================================================================
+class Upload(db.Model):
+    __tablename__ = 'upload'
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(50))
+    data = db.Column(db.LargeBinary)
+    
+    
+    
