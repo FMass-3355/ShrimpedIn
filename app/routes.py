@@ -1,6 +1,7 @@
 import requests
 from app import app
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request, session, jsonify, send_file
+from io import BytesIO
 from flask_login import login_user, logout_user, login_required, current_user
 from app.forms import *
 from app import db
@@ -178,6 +179,33 @@ def profile():
 #===================================================================================================
 
 #===================================================================================================
+#uploading and downloading files 
+#===================================================================================================
+@app.route('/upload', methods=['GET', 'POST'])
+@login_required
+def upload():
+    if request.method == 'POST':
+        file = request.files['file']
+
+        upload = Upload(filename=file.filename, data=file.read())
+        db.session.add(upload)
+        db.session.commit()
+
+        return f'Uploaded: {file.filename}'
+    return render_template('index.html')
+
+
+@app.route('/download/<upload_id>')
+def download(upload_id):
+    upload = Upload.query.filter_by(id=upload_id).first()
+    return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
+        
+#===================================================================================================
+
+
+
+
+#===================================================================================================
 #Job adding Functionality
 #===================================================================================================
 @app.route('/jobs')
@@ -187,6 +215,7 @@ def jobs():
         title = db.session.query(Job).filter
     return render_template('jobs.html', job_title=title)
 #===================================================================================================
+
 
 
 

@@ -19,6 +19,12 @@
 		</div>
 
 		<p>Email: {{ email }}</p>
+		<br>
+		<div class="center">
+			<from method="POST" action="/upload" enctype="multipart/form-data">
+				<input type="file" name="file">
+				<button>Submit</button></from>
+		</div>
 	</div>
 </section>
 
