@@ -4,5 +4,9 @@ FLASK_RUN_PORT=8080
 FLASK_RUN_HOST=0.0.0.0
 MYSQL_IP='127.0.0.1'
 MYSQL_USER='root'
-MYSQL_PASS='FVMassimi3355'
-MYSQL_DB='ShrimpedIn'
+MYSQL_PASS='rezvee_sql'
+MYSQL_DB='shrimpedin'
+API_HOST='data.usajobs.gov'
+API_URL='https://data.usajobs.gov/api/search'
+EMAIL='shrimpedin@gmail.com'
+API_KEY='nRTr9lBXqeVnxk+nG8NMXGuNifqbYtwJrl6xZgCKGBY='

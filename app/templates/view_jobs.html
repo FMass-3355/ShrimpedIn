@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+ {% block content %}
+   <table id="data" class="table table-striped">
+     <thead>
+       <tr>
+         <th>Job title</th>
+         <th>Location</th>
+         <th>Full description</th>
+       </tr>
+     </thead>
+     <tbody>
+       {% for job in job_results %}
+       <tr>
+         <td>{{job.title}}</td>
+         <td>{{job.location}}</td>
+         <td><a href={{job.URI}}>click here</a></td>
+       </tr>
+       {% endfor %}
+     </tbody>
+   </table>
+ {% endblock %}

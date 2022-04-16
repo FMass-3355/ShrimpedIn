@@ -1,13 +1,28 @@
-<h1 style="color: purple;">Profile</h1>
-
 {% extends "base.html" %}
 
 {% block content %}
-	<p>Username: {{ username }}</p><br>
+<section class="p-3 mb-2 text-white" style="background-color:hotpink; ">
+	<div class="container">
+		
+		<img src="static/images/profile.png" width="220px" height="220px" style="display:block;margin:auto; padding: auto; border: 5px solid rgb(240, 38, 156);" class="center">
+		<br>
+		<h1 style="padding-bottom: 2.5%; text-align: center; ">{{ username }}</h1>
+		<br>
+		<div class="border border-success"   style="border-style:solid; border: 3px; border-color:palegreen;">
+		 
 
-	<p>First Name: {{ fname }}</p><br>
+		<h2>User Bio</h2>
+		<p>First Name: {{ fname }}</p><br>
 
-	<p>Last Name: {{ lname }}</p><br>
+		<p>Last Name: {{ lname }}</p><br>
+		
+		</div>
 
-	<p>Email: {{ email }}</p>
+		<p>Email: {{ email }}</p>
+	</div>
+</section>
+
+
+
+
 {% endblock %}
