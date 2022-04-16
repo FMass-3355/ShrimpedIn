@@ -45,6 +45,7 @@ EMAIL = environ.get('EMAIL')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'csc33O'
 bootstrap = Bootstrap(app)
+app.static_folder = "static"
 #===================================================================================================
 #===================================================================================================
 # Specify the connection parameters/credentials for the database

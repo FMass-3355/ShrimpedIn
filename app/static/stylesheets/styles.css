@@ -1,7 +1,7 @@
   body,html{
     height: 100%;
     margin: 0%;
-    background-image:linear-gradient(to bottom, pink 60%, hotpink);
+    background-image:linear-gradient(to bottom, pink 60%, #b39bc8);
   }
 
   .full{
