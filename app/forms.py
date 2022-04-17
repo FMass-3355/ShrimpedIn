@@ -82,3 +82,7 @@ class SearchForm(FlaskForm):
      submit = SubmitField('Search')
 #===================================================================================================    
 
+class SearchForm2(FlaskForm):
+    keyword = StringField('Keyword', validators=[DataRequired()])
+    submit = SubmitField('Search')
+
