@@ -1,7 +1,6 @@
 import requests
 from app import app
-from flask import render_template, redirect, url_for, flash, request, session, jsonify, send_file
-from io import BytesIO
+from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from app.forms import *
 from app import db
@@ -202,9 +201,6 @@ def download(upload_id):
         
 #===================================================================================================
 
-
-
-
 #===================================================================================================
 #Job adding Functionality
 #===================================================================================================
@@ -215,7 +211,6 @@ def jobs():
         title = db.session.query(Job).filter
     return render_template('jobs.html', job_title=title)
 #===================================================================================================
-
 
 
 
@@ -278,6 +273,7 @@ def search():
                 'Authorization-Key': API_KEY}
     form = SearchForm()
     if form.validate_on_submit():
+        job_results = []
         city = form.city.data + '%20' + form.state.data
         keyword = form.keyword.data
         full_URL = f'{API_URL}?LocationName={city}&Keyword={keyword}&ResultsPerPage=50'
@@ -290,8 +286,17 @@ def search():
 
          # Extract title, location and URI from API and package as a list of
          # objects (job_results)
+
+        for item in db.session.query(Job).filter(Job.job_title==keyword):
+            job = JobInfo()
+            job.title = item.job_title
+            job.URI = item.url
+            job.location = item.company
+            job_results.append(job)
+
         response_json = response.json()
-        job_results = []
+        
+        
         for item in response_json['SearchResult']['SearchResultItems']:
             job = JobInfo()
             job.URI = item['MatchedObjectDescriptor']['PositionURI']

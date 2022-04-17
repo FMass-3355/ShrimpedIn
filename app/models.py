@@ -4,6 +4,7 @@ import requests
 from flask import render_template, redirect, url_for, flash, request, session, jsonify, send_file
 from io import BytesIO
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import *
 
 # User extends the flask_login defined UserMixin class.  UserMixin
 # provides default functionality that allows us to keep track of
@@ -76,6 +77,7 @@ class JobInfo:
         title = title
         URI = URI
         location = location
+        
 
 
 
