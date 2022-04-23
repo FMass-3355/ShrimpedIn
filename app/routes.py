@@ -178,6 +178,30 @@ def profile():
 #===================================================================================================
 
 #===================================================================================================
+#uploading and downloading files 
+#===================================================================================================
+@app.route('/upload', methods=['GET', 'POST'])
+@login_required
+def upload():
+    if request.method == 'POST':
+        file = request.files['file']
+
+        upload = Upload(filename=file.filename, data=file.read())
+        db.session.add(upload)
+        db.session.commit()
+
+        return f'Uploaded: {file.filename}'
+    return render_template('index.html')
+
+
+@app.route('/download/<upload_id>')
+def download(upload_id):
+    upload = Upload.query.filter_by(id=upload_id).first()
+    return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
+        
+#===================================================================================================
+
+#===================================================================================================
 #Job adding Functionality
 #===================================================================================================
 @app.route('/jobs')
@@ -202,7 +226,6 @@ def chat():
     return render_template('chat.html')
 #===================================================================================================
 @app.route('/account_recovery', methods=['GET', 'POST'])
-@login_required
 def recover_account():
     form = AccountRecovery()
     if form.validate_on_submit():
@@ -250,6 +273,7 @@ def search():
                 'Authorization-Key': API_KEY}
     form = SearchForm()
     if form.validate_on_submit():
+        job_results = []
         city = form.city.data + '%20' + form.state.data
         keyword = form.keyword.data
         full_URL = f'{API_URL}?LocationName={city}&Keyword={keyword}&ResultsPerPage=50'
@@ -262,8 +286,17 @@ def search():
 
          # Extract title, location and URI from API and package as a list of
          # objects (job_results)
+
+        for item in db.session.query(Job).filter(Job.job_title==keyword):
+            job = JobInfo()
+            job.title = item.job_title
+            job.URI = item.url
+            job.location = item.company
+            job_results.append(job)
+
         response_json = response.json()
-        job_results = []
+        
+        
         for item in response_json['SearchResult']['SearchResultItems']:
             job = JobInfo()
             job.URI = item['MatchedObjectDescriptor']['PositionURI']

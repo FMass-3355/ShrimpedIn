@@ -2,13 +2,25 @@
 
 
 {% block content %}
+
+<html>
+    <body>
         <div class="container">
-            <h1 style="padding-bottom: 2.5%;">Current Job Postings</h1>
             <div class="row">
-                <div class="col-sm-8" style="text-align: center; height: 100%; border: 2px solid black; padding: 0px;">
-                    <p style="padding-left: 10px;">TEST</p>
-                    <h1>TEST</h1><br>
-                    <p>TEST</p>
+                <div class="col-md-12">
+                    <!-- Possible button
+                        <p class="btn btn-outline-dark" style="display: flex; margin: auto; width: fit-content; background-color: white;">
+                        Change Search Option</btn> 
+                    -->
+                </div>
+            </div>
+            <h1 style="padding-bottom: 2.5%;">Current Job Postings</h1>
+           
+            <div class="row">
+                <div class="col-sm-8" style="text-align: center; height: 100%; padding: 0px;">
+                     
+                    <iframe src="search" title="W3Schools Free Online Web Tutorials" height="682px" width="100% background-color:transparent;"></iframe>
+           
                 </div>
                     
                 <div class="col-sm-4" style="text-align: center;">
@@ -16,4 +28,7 @@
                 </div>
             </div>
         </div>
+    </body>
+</html>
+        
 {% endblock %}
