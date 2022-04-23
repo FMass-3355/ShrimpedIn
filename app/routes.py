@@ -115,7 +115,7 @@ def change_password():
 
 
 #===================================================================================================
-#Add user
+#Add user only done by admin
 #===================================================================================================
 '''
 Use by the admin to create new users
@@ -141,7 +141,7 @@ def add_user():
     return render_template('invalid_credentials.html')
 #===================================================================================================
 #===================================================================================================
-#Create User
+#Create User for logging in
 #===================================================================================================
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
@@ -149,11 +149,13 @@ def create_user():
         if form.validate_on_submit():
             fname = form.fname.data
             lname = form.lname.data
+            role = form.role.data
             username = form.username.data
             password = form.password.data
             email = form.email.data
             if not db.session.query(User).filter_by(email=email).first():
-                user = User(username=username, email=email, role='user', fname=fname, lname=lname)
+                user = User(username=username, email=email, role=role, fname=fname, lname=lname)
+                print(user, file=sys.stderr)
                 user.set_password(password)
                 db.session.add(user)
                 db.session.commit()
