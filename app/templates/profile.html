@@ -4,28 +4,41 @@
 <section class="p-3 mb-2">
 	<div class="container">
 		
-		<img src="static/images/profile.png" width="220px" height="220px" style="display:block;margin:auto; padding: auto; border: 5px solid rgb(240, 38, 156);" class="center">
+		<img src="static/images/profile.png" width="220px" height="220px" \
+		style="display:block;margin:auto; padding: auto; border: 2.5px solid #f172a1; border-radius: 50%;" class="center">
 		<br>
 		<h1 style="padding-bottom: 2.5%; text-align: center; ">{{ username }}</h1>
 		<br>
-		<div class="border border-success"   style="border-style:solid; border: 3px; border-color:palegreen;">
-		 
 
-		<h2>User Bio</h2>
-		<p>First Name: {{ fname }}</p><br>
+		<div id="body_section" style="background-color:#fde9f2; border: 1px solid rgb(52, 11, 141); padding: 1%;">
+			<div id="photo" >
+				<h2>User Bio</h2>
+				<p>First Name: {{ fname }}</p><br>
 
-		<p>Last Name: {{ lname }}</p><br>
+				<p>Last Name: {{ lname }}</p><br>
+				
+				<p>Email: {{ email }}</p>
+			</div><hr>
+
+			<div id="pic_submit" class="center">
+				<form method="POST" action="/upload" enctype="multipart/form-data">
+					<input type="file" name="file">
+					<button>Submit</button>
+				</form>
+			</div><hr>
+
+			<div id="resume">
+				<h2>Resume</h2>
+			</div><hr>
+
+			<div id="experience">
+				<h2>Work Experience</h2>
+			</div>
+		</div>
+
 		
-		</div>
-
-		<p>Email: {{ email }}</p>
 		<br>
-		<div class="center">
-			<form method="POST" action="/upload" enctype="multipart/form-data">
-				<input type="file" name="file">
-				<button>Submit</button>
-			</form>
-		</div>
+		
 	</div>
 </section>
 {% endblock %}
