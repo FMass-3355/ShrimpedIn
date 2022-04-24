@@ -4,7 +4,7 @@ import requests
 from flask import render_template, redirect, url_for, flash, request, session, jsonify, send_file
 from io import BytesIO
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy import*
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -19,9 +19,9 @@ from sqlalchemy.ext.declarative import declarative_base
 #Please make sure to do db.create_all()
 #===================================================================================================
 
-student_job = db.Table('student_job',
+student_application = db.Table('student_application',
     db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-    db.Column('job_id', db.Integer, db.ForeignKey('jobs.id'))
+    db.Column('application_id', db.Integer, db.ForeignKey('applications.id'))
 )
 
 #===================================================================================================
@@ -38,6 +38,7 @@ class User(UserMixin, db.Model):
     m_name = db.Column(db.String(64))
     lname = db.Column(db.String(64))
 
+    image_file = db.Column(db.String(20), default='profile.png')
     date_of_birth = db.Column(db.Date)#might not work
     # date_year = db.Column(db.Integer(4))
     # date_month = db.Column(db.String(64))#maybe int for month number
@@ -48,12 +49,16 @@ class User(UserMixin, db.Model):
     city = db.Column(db.String(64))
     state = db.Column(db.String(64)) #want to have a drop down list that can fill in state
     #profile_pic *maybe*
-    jobs = relationship("Job")
+    application = relationship("Application", secondary=student_application)
     company_id = Column(Integer, ForeignKey('companies.id'))
     #resume *maybe*
     #cover_letter *maybe*
     #recomendation(s) ***maybe*** <--might need another table
     #acc_stat = db.Column(db.String(64))
+    __mapper_args__ = {
+        'polymorphic_identity':'user',
+        'polymorphic_on':role
+    }
 #===================================================================================================
 #Password Salting
 #===================================================================================================
@@ -85,14 +90,24 @@ class Job(db.Model):
     url = db.Column(db.String(200))
     
     address = db.Column(db.String(64))
-    zip_code = db.Column(db.Integer) #imad didnt have () so might not work
+    zip_code = db.Column(db.Integer) 
     city = db.Column(db.String(64))
-    state = db.Column(db.String(64)) #want to have a drop down list that can fill in state
+    state = db.Column(db.String(64)) 
 
     recruiter_id = Column(Integer, ForeignKey('users.id'))
     #resume *maybe*
     #cover_letter *maybe*
     #recomendation(s) ***maybe*** <--might need another table
+
+class Application(db.Model):
+    __tablename__ = 'applications'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    job_id = Column(Integer, ForeignKey('jobs.id'), primary_key=True)
+    # resume_filename = db.Column(db.String(50))
+    # resume_data = db.Column(db.LargeBinary)
+    # cl_filename = db.Column(db.String(50))
+    # cl_data = db.Column(db.LargeBinary)
 
 class Company(db.Model):
     __tablename__ = 'companies'
@@ -101,20 +116,32 @@ class Company(db.Model):
     company_description = db.Column(db.String(64))
     #profile_pic *maybe*
     # maybe only one address for either job or company
-    address = db.Column(db.String(64))
-    zip_code = db.Column(db.Integer) #imad didnt have () so might not work
-    city = db.Column(db.String(64))
-    state = db.Column(db.String(64)) #want to have a drop down list that can fill in stat
+    # address = db.Column(db.String(64))
+    # zip_code = db.Column(db.Integer) 
+    # city = db.Column(db.String(64))
+    # state = db.Column(db.String(64)) 
 
     recruiters = relationship("User")
 
-
 class Student(User):
+    __tablename__='student'
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
     __mapper_args__ = {'polymorphic_identity': 'student'}
 
 class Recruiter(User):
+    __tablename__='recruiter'
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
     __mapper_args__ = {'polymorphic_identity': 'recruiter'}
 
+class Faculty(User):
+    __tablename__='faculty'
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    __mapper_args__ = {'polymorphic_identity': 'faculty'}
+
+class Admin(User):
+    __tablename__='admin'
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    __mapper_args__ = {'polymorphic_identity': 'admin'}
 
 
 # API Sprint 3
@@ -144,6 +171,6 @@ class Upload(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(50))
     data = db.Column(db.LargeBinary)
-    
+    doc_type = db.Column(db.String(64))
     
     

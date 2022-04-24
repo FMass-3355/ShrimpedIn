@@ -174,9 +174,10 @@ def profile():
         fname = current_user.fname
         lname = current_user.lname
         email = current_user.email
+        image_file = url_for('static', filename='images/' + current_user.image_file)
         print(fname, file=sys.stderr)
     
-    return render_template('profile.html', fname=fname, lname=lname, email=email, username=username)
+    return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, image_file=image_file)
 #===================================================================================================
 
 #===================================================================================================
@@ -247,7 +248,7 @@ def recover_account():
 @app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
-    if is_recruiter() or is_student() or is_admin():
+    if is_recruiter() or is_admin():
         form = AddJob()
         if form.validate_on_submit():
             job_title = form.job_title.data
