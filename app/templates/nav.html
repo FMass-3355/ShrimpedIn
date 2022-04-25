@@ -30,11 +30,11 @@
         <li class="nav-item">
           <a class="nav-link" href="/chat" style="color: #f0ebf4;">Messages</a>
         </li>
-
+        {% if current_user.role == 'admin' %}
         <li class="nav-item">
           <a class="nav-link" href="/add_user" style="color: #f0ebf4;">Create Another User</a>
         </li>
-
+        {% endif %}
         
         <li class="nav-item dropdown">
           <a class="nav-link dropwdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" \
