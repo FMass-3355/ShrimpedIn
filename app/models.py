@@ -1,5 +1,5 @@
 from app import db, login
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 import requests
 from flask import render_template, redirect, url_for, flash, request, session, jsonify, send_file
 from io import BytesIO
