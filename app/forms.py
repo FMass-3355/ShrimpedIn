@@ -46,7 +46,7 @@ class CreateUserForm(FlaskForm):
     fname = StringField('First Name', validators=[DataRequired()])
     lname = StringField('Last Name', validators=[DataRequired()])
     mname = StringField('MI')
-    #date_of_birth = StringField('Date of Birth (MM/DD/YYYY) (In Progress)')
+    date_of_birth = DateField('Date of Birth (YYYY/MM/DD) (In Progress)')
     submit = SubmitField('Create Account')
     # def validate_username(self, username):
     #     user = User.query.filter_by(username=username.data).first()

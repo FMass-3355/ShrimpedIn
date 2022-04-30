@@ -152,11 +152,11 @@ def create_user():
         fname = form.fname.data
         lname = form.lname.data
         mname = form.mname.data
-        #dob = form.date_of_birth.data
+        dob = form.date_of_birth.data
         
         if not db.session.query(User).filter_by(email=email).first():
             user = User(username=username, email=email, role=role, fname=fname,
-                        lname=lname, m_name=mname)
+                        lname=lname, m_name=mname, date_of_birth=dob)
             print(user, file=sys.stderr)
             user.set_password(password)
             db.session.add(user)
