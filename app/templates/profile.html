@@ -11,24 +11,33 @@
 		<br>
 
 		<div id="body_section" style="background-color:#fde9f2; border: 1px solid rgb(52, 11, 141); padding: 1%;">
-			<div id="photo" >
-				<h2>User Bio</h2>
+			<div id="photo">
+				<div class="row">
+					<div class="col-md-6"><h2>User Bio</h2></div>
+					<div class="col-md-6"><a class="btn btn-outline-dark" style="float: right;">Edit Profile</a></div>
+				</div>
+
 				<p>First Name: {{ fname }}</p><br>
 
 				<p>Last Name: {{ lname }}</p><br>
-				
-				<p>Email: {{ email }}</p>
-			</div><hr>
 
-			<div id="pic_submit" class="center">
-				<form method="POST" action="/upload" enctype="multipart/form-data">
-					<input type="file" name="file">
-					<button>Submit</button>
-				</form>
+				<p>MI: {{ m_name }}</p><br>
+				
+				<p>Email: {{ email }}</p><br>
+
+				<p>Date of Birth: {{ date_of_birth }}</p><br>
+
+				<p>Address: {{ address }} {{ city }} {{ state }} {{ zip_code }}</p>
 			</div><hr>
 
 			<div id="resume">
 				<h2>Resume</h2>
+				<div id="pic_submit" class="center">
+					<form method="POST" action="/upload" enctype="multipart/form-data">
+						<input type="file" name="file">
+						<button>Upload</button>
+					</form>
+				</div>
 			</div><hr>
 
 			<div id="experience">
@@ -36,7 +45,6 @@
 			</div>
 		</div>
 
-		
 		<br>
 		
 	</div>

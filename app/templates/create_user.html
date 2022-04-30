@@ -26,41 +26,40 @@
                 <div class="col-md-10 offset-md-1">
                     <h1 style="text-align: center; padding-left: 10px;">Create Account</h1><br><br>
                     <div class="row">
-                        <div class="col-md-6 offset-md-3" style="padding-bottom: 5%;">
+                        <div class="col-md-10 offset-md-1" style="padding-bottom: 5%;">
                             <form action="" method="post" novalidate>
                                 {{ form.hidden_tag() }}
-                                <p style="width: fit-content; margin: auto;">
-                                    {{ form.fname.label }}<br>
-                                    {{ form.fname(size=32) }}
+                                <p class="login_box">
+                                    {{ form.username.label }}<br>
+                                    {{ form.username(size=32) }}
                                 </p>
 
-                                <p style="width: fit-content; margin: auto;">
-                                    {{ form.lname.label }}<br>
-                                    {{ form.lname(size=32) }}
-                                </p><br>
+                                <p class="login_box">
+                                    {{ form.password.label }}<br>
+                                    {{ form.password(size=32) }}
+                                </p>
 
-                                <p style="width: fit-content; margin: auto;">
+                                <p class="login_box">
+                                    {{ form.email.label }}<br>
+                                    {{ form.email(size=32) }}
+                                </p><br>
+                                
+                                <p class="login_box">
                                     {{ form.role.label}}
                                     {{ form.role }}
                                 </p><br>
 
-                                <p style="width: fit-content; margin: auto;">
-                                    {{ form.email.label }}<br>
-                                    {{ form.email(size=32) }}
+                                <p class="login_box">
+                                    {{ form.fname.label }}<br>
+                                    {{ form.fname(size=32) }}
                                 </p>
-
-                                <p style="width: fit-content; margin: auto;">
-                                    {{ form.username.label }}<br>
-                                    {{ form.username(size=32) }}
-                                </p>
-        
-                                <p style="width: fit-content; margin: auto;">
-                                    {{ form.password.label }}<br>
-                                    {{ form.password(size=32) }}
+                                <p class="login_box">
+                                    {{ form.lname.label }}<br>
+                                    {{ form.lname(size=32) }}
                                 </p><br>
-                                        
+
                                 <p class="btn" style="display: flex; justify-content: center;"> {{ form.submit() }} </p>
-                                <br><hr style="width: 50%; margin: auto;"><br>
+                                <hr style="width: 50%; margin: auto;">
                             </form>
 
                             <a class="btn btn-outline-dark" href="/login" \
