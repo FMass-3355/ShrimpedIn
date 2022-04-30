@@ -5,6 +5,11 @@
     background-image:linear-gradient(to bottom, pink 60%, #b39bc8);
   }
 
+  .login_box{
+    width: fit-content;
+    margin: auto;
+  }
+
   .full{
     height:100%; background-image: linear-gradient(to bottom, pink 60%, hotpink);
   }

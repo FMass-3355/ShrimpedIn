@@ -45,12 +45,24 @@ class CreateUserForm(FlaskForm):
     role = SelectField('Role', choices=[('student', 'student'), ('faculty', 'faculty'), ('recruiter', 'recruiter')])
     fname = StringField('First Name', validators=[DataRequired()])
     lname = StringField('Last Name', validators=[DataRequired()])
+    mname = StringField('MI')
+    date_of_birth = DateField('Date of Birth (YYYY/MM/DD) (In Progress)')
     submit = SubmitField('Create Account')
-
     # def validate_username(self, username):
     #     user = User.query.filter_by(username=username.data).first()
     #     if user:
     #         raise ValueError('TAKEN')
+#===================================================================================================
+
+#===================================================================================================
+# EDIT PROFILE A WORK IN PROGRESS
+#===================================================================================================
+class EditProfileForm(FlaskForm):
+    address = StringField('Street Address')
+    city = StringField('City')
+    state = StringField('State')
+    zip_code = StringField('Zip Code')
+    submit = SubmitField('Complete Edits')
 #===================================================================================================
 
 #===================================================================================================

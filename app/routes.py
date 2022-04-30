@@ -58,7 +58,7 @@ def login():
         return redirect(url_for('homepage'))
     return render_template('login.html', form=form)
 #===================================================================================================
-#===================================================================================================
+
 #===================================================================================================
 #Logging out
 #===================================================================================================
@@ -69,10 +69,6 @@ def logout():
     return redirect(url_for('login'))
 #===================================================================================================
 
-
-
-
-
 #===================================================================================================
 #Settings
 #===================================================================================================
@@ -80,6 +76,10 @@ def logout():
 @login_required
 def settings():
     return render_template('settings.html')
+#===================================================================================================
+
+#===================================================================================================
+#Change Password
 #===================================================================================================
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
@@ -111,9 +111,6 @@ def change_password():
     return render_template('change_password.html', form = form)
 #===================================================================================================
 
-
-
-
 #===================================================================================================
 #Add user only done by admin
 #===================================================================================================
@@ -140,29 +137,35 @@ def add_user():
         return render_template('add_user.html', form=form)
     return render_template('invalid_credentials.html')
 #===================================================================================================
+
 #===================================================================================================
 #Create User for logging in
 #===================================================================================================
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
-        form = CreateUserForm()
-        if form.validate_on_submit():
-            fname = form.fname.data
-            lname = form.lname.data
-            role = form.role.data
-            username = form.username.data
-            password = form.password.data
-            email = form.email.data
-            if not db.session.query(User).filter_by(email=email).first():
-                user = User(username=username, email=email, role=role, fname=fname, lname=lname)
-                print(user, file=sys.stderr)
-                user.set_password(password)
-                db.session.add(user)
-                db.session.commit()
-        all_usernames= db.session.query(User.username).all()
-        print(all_usernames, file=sys.stderr)
-        return render_template('create_user.html', form=form)
+    form = CreateUserForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        email = form.email.data
+        role = form.role.data
+        fname = form.fname.data
+        lname = form.lname.data
+        mname = form.mname.data
+        dob = form.date_of_birth.data
+        
+        if not db.session.query(User).filter_by(email=email).first():
+            user = User(username=username, email=email, role=role, fname=fname,
+                        lname=lname, m_name=mname, date_of_birth=dob)
+            print(user, file=sys.stderr)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+    all_usernames= db.session.query(User.username).all()
+    print(all_usernames, file=sys.stderr)
+    return render_template('create_user.html', form=form)
 #===================================================================================================
+
 #===================================================================================================
 #Profile creation
 #===================================================================================================
@@ -174,10 +177,38 @@ def profile():
         fname = current_user.fname
         lname = current_user.lname
         email = current_user.email
+        m_name = current_user.m_name
+        dob = current_user.date_of_birth
+        address = current_user.address
+        city = current_user.city
+        state = current_user.state
+        zip_code = current_user.zip_code
         image_file = url_for('static', filename='images/' + current_user.image_file)
         print(fname, file=sys.stderr)
     
-    return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, image_file=image_file)
+    return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
+                            image_file=image_file, m_name=m_name, date_of_birth=dob, address=address, city=city, state=state,
+                            zip_code=zip_code)
+#===================================================================================================
+
+#===================================================================================================
+#Edit Profile WORK IN PROGRESS
+#===================================================================================================
+'''
+@app.route('/edit_profile')
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        address = form.address.data
+        city = form.city.data
+        state = form.state.data
+        zip_code = form.zip_code.data
+
+        user = User(address=address, city=city, state=state, zip_code=zip_code)
+        db.session.add(user)
+        db.session.commit()
+    return render_template('edit_profile.html', form=form)'''
 #===================================================================================================
 
 #===================================================================================================
@@ -215,11 +246,6 @@ def jobs():
     return render_template('jobs.html', job_title=title)
 #===================================================================================================
 
-
-
-
-
-
 #===================================================================================================
 #Messaging/Chat
 #===================================================================================================
@@ -236,8 +262,6 @@ def recover_account():
         if db.session.query(User).filter_by(username=username).first():
             print("Account Recovered")
     return render_template('account_recovery.html', form=form)
-
-
 
 
 
