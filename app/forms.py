@@ -4,6 +4,7 @@
 from secrets import choice
 from flask_wtf import FlaskForm
 from wtforms import *
+from wtforms.widgets import TextArea
 from wtforms.validators import *
 #===================================================================================================
 
@@ -57,7 +58,7 @@ class EditProfileForm(FlaskForm):
     phone_number = StringField('Phone Number')
     address = StringField('Street Address')
     city = StringField('City')
-    state = SelectField('State', choices=['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 
+    state = SelectField('State', choices=['', 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 
                                         'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS',
                                          'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 
                                          'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 
@@ -66,9 +67,8 @@ class EditProfileForm(FlaskForm):
     phone_number = StringField('Phone Number')
     fname = StringField('First Name')
     mname = StringField('Middle Initial')
+    user_bio = StringField('User Bio', widget=TextArea())
     lname = StringField('Last Name')
-    email = StringField('Email')
-    username = StringField('Username')
     submit = SubmitField('Update Profile')
 #===================================================================================================
 

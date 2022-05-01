@@ -1,4 +1,5 @@
 from tkinter.tix import Select
+from pymysql import NULL
 import requests
 from app import app
 from flask import render_template, redirect, url_for, flash
@@ -186,12 +187,14 @@ def profile():
         state = current_user.state
         zip_code = current_user.zip_code
         phone_number = current_user.phone_number
+        user_bio = current_user.user_bio
+
         image_file = url_for('static', filename='images/' + current_user.image_file)
         print(fname, file=sys.stderr)
     
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
                             image_file=image_file, mname=mname, date_of_birth=dob, address=address, city=city, state=state,
-                            zip_code=zip_code, phone_number=phone_number)
+                            zip_code=zip_code, phone_number=phone_number, user_bio=user_bio)
 #===================================================================================================
 
 #===================================================================================================
@@ -210,22 +213,58 @@ def edit_profile():
         fname = form.fname.data
         mname = form.mname.data
         lname = form.lname.data
-        email = form.email.data
-        username = form.username.data
-        current_user.fname = fname        
-        current_user.mname = mname
-        current_user.lname = lname
-        current_user.email = email
-        current_user.username = username
-        current_user.address = address
-        current_user.city = city
-        current_user.state = state
-        current_user.zip_code = zip_code
-        current_user.phone_number = phone_number
+        user_bio = form.user_bio.data
+
+        if mname == '':
+            current_user.mname = current_user.mname
+        else:
+            current_user.mname = mname
+
+        if lname == '':
+            current_user.lname = current_user.lname
+        else:
+            current_user.lname = lname
+
+        if zip_code == '':
+            current_user.zip_code = current_user.zip_code
+        else:
+            current_user.zip_code = zip_code
+
+        if phone_number == '':
+            current_user.phone_number = current_user.phone_number
+        else:
+            current_user.phone_number = phone_number
+
+        if user_bio == '':
+            current_user.user_bio = current_user.user_bio
+        else:
+            current_user.user_bio = user_bio
+
+        if fname == '':
+            current_user.fname = current_user.fname
+        else:
+            current_user.fname = fname
+
+        if state == '':
+            current_user.state = current_user.state
+        else:
+            current_user.state = state
+
+        if city == '':
+            current_user.city = current_user.city       
+        else:
+            current_user.city = city
+
+        if address == '':
+            current_user.address = current_user.address
+        else:
+            current_user.address = address
+
         db.session.add(current_user)
         db.session.commit()
         return redirect(url_for('profile'))
-    return render_template('edit_profile.html', form=form)
+    image_file = url_for('static', filename='images/' + current_user.image_file)
+    return render_template('edit_profile.html', form=form, image_file=image_file)
 #===================================================================================================
 
 #===================================================================================================

@@ -1,3 +1,4 @@
+from email.policy import default
 from app import db, login
 from flask_login import UserMixin, current_user
 import requests
@@ -38,12 +39,13 @@ class User(UserMixin, db.Model):
     lname = db.Column(db.String(64))
 
     image_file = db.Column(db.String(20), default='profile.png')
-    date_of_birth = db.Column(db.Date)#might not work
+    date_of_birth = db.Column(db.Date)
+    user_bio = db.Column(db.String(512))
     # date_year = db.Column(db.Integer(4))
     # date_month = db.Column(db.String(64))#maybe int for month number
     # date_day = db.Column(db.Integer(2)) 
     phone_number = db.Column(db.String(20))
-    address = db.Column(db.String(64))
+    address = db.Column(db.String(64), default="No Address")
     zip_code = db.Column(db.String(10)) #imad didnt have () so might not work
     city = db.Column(db.String(64))
     state = db.Column(db.String(64)) #want to have a drop down list that can fill in state
