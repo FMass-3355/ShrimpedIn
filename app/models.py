@@ -43,6 +43,7 @@ class User(UserMixin, db.Model):
     date_of_birth = db.Column(db.Date)
     phone_number = db.Column(db.String(128))
     user_bio = db.Column(db.String(512))
+    image_file = db.Column(db.String(20), default='profile.png')
     
     #Password Salting
     def set_password(self, password):
@@ -131,6 +132,7 @@ class Upload(db.Model):
     filename = db.Column(db.String(50))
     data = db.Column(db.LargeBinary)
     doc_type = db.Column(db.String(64))
+    user_id = Column(Integer, ForeignKey('users.id'))
 #-----------------Upload files---------------------------- 
 
 #===================================================================================================

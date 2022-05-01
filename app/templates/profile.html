@@ -6,7 +6,7 @@
 		<section class="p-3 mb-2">
 			<div class="container" style="padding-top: 3%;">
 				
-				<img src="static/profile.png" width="220px" height="220px" \
+				<img src="{{ image_file }}" width="220px" height="220px" \
 				style="display:block;margin:auto; padding: auto; border: 2.5px solid #f172a1; border-radius: 50%;" class="center">
 				<br>
 				<h1 style="padding-bottom: 2.5%; text-align: center; ">{{ username }}</h1>
@@ -22,9 +22,18 @@
 						<p>{{ user_bio }}</p><hr>
 
 						<div id="resume">
+							<h2>IMG TEST</h2>
+							<div id="pic_submit" class="center">
+								<form method="POST" action="/upload_img" enctype="multipart/form-data">
+									<input type="file" name="file">
+									<button>Upload</button>
+								</form>
+						</div>
+
+						<div id="resume">
 							<h2>Resume</h2>
 							<div id="pic_submit" class="center">
-								<form method="POST" action="/upload" enctype="multipart/form-data">
+								<form method="POST" action="/upload_resume" enctype="multipart/form-data">
 									<input type="file" name="file">
 									<button>Upload</button>
 								</form>
