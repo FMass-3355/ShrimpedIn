@@ -1,45 +1,45 @@
-import requests
+#Imports
 from app import app
-from flask import render_template, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import *
-from app import db
-from app.models import *
-import sys
+#-------environment-------#
 from dotenv import load_dotenv
 from os import environ
+#------SQLAlchemy---------#
+from app import db
+from app.models import *
+#------flask------#
+from flask import render_template, redirect, url_for, flash
+from flask_login import login_user, logout_user, login_required, current_user
+#------WTFForms---------#
+from app.forms import *
 from wtforms.validators import DataRequired
+#--------Externals-----#
+import sys
+import requests
 
 
-#===================================================================================================
-#API 
-# Read values from .flaskenv
-#===================================================================================================
+#API (needed for the USAjobs stuff and other APIs)
 API_KEY = environ.get('API_KEY')
 API_HOST = environ.get('API_HOST')
 API_URL = environ.get('API_URL')
 EMAIL = environ.get('EMAIL')
-#===================================================================================================
 
-#===================================================================================================
-#Homepage
-#===================================================================================================
+
+#------------------------------------------------------------ Static Webpages ----------------------------------------------------------------#
 @app.route('/homepage')
 def homepage():
     return render_template('homepage.html')
-#===================================================================================================
+
+#------------------------------------------------------------ Static Webpages ----------------------------------------------------------------#
 
 
-#===================================================================================================
-#Logging in is the 
-#===================================================================================================
+
+#------------------------------------------------------------- Account Methods ----------------------------------------------------------------#
+#Start with here
 @app.route('/')
 def index():
     return redirect(url_for('login'))
-#===================================================================================================
-#===================================================================================================
+    
 #Login Method
-#===================================================================================================
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Authenticated users are redirected to home page.
@@ -57,30 +57,21 @@ def login():
         print('Login successful', file=sys.stderr)
         return redirect(url_for('homepage'))
     return render_template('login.html', form=form)
-#===================================================================================================
 
-#===================================================================================================
 #Logging out
-#===================================================================================================
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
-#===================================================================================================
 
-#===================================================================================================
-#Settings
-#===================================================================================================
+#Profile Settings
 @app.route('/settings')
 @login_required
 def settings():
     return render_template('settings.html')
-#===================================================================================================
 
-#===================================================================================================
 #Change Password
-#===================================================================================================
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
 def change_password():
@@ -109,40 +100,10 @@ def change_password():
     Verify that old password matches and the new password and retype also match.
     '''
     return render_template('change_password.html', form = form)
-#===================================================================================================
 
-#===================================================================================================
-#Add user only done by admin
-#===================================================================================================
-'''
-Use by the admin to create new users
-'''
-@app.route('/add_user', methods=['GET', 'POST'])
-def add_user():
-    if is_admin():
-        form = CreateUserForm()
-        if form.validate_on_submit():
-            fname = form.fname.data
-            lname = form.lname.data
-            username = form.username.data
-            password = form.password.data
-            email = form.email.data
-            if not db.session.query(User).filter_by(email=email).first():
-                user = User(username=username, email=email, role='user', fname=fname, lname=lname)
-                user.set_password(password)
-                db.session.add(user)
-                db.session.commit()
-        all_usernames= db.session.query(User.username).all()
-        print(all_usernames, file=sys.stderr)
-        return render_template('add_user.html', form=form)
-    return render_template('invalid_credentials.html')
-#===================================================================================================
-
-#===================================================================================================
-#Create User for logging in
-#===================================================================================================
+#Create user (basically create and account)
 @app.route('/create_user', methods=['GET', 'POST'])
-def create_user():
+def create_user(): 
     form = CreateUserForm()
     if form.validate_on_submit():
         username = form.username.data
@@ -164,11 +125,34 @@ def create_user():
     all_usernames= db.session.query(User.username).all()
     print(all_usernames, file=sys.stderr)
     return render_template('create_user.html', form=form)
-#===================================================================================================
+#------------------------------------------------------------- Account Methods ----------------------------------------------------------------#
 
-#===================================================================================================
-#Profile creation
-#===================================================================================================
+
+
+
+#----------------------------------------------------------- Administrator Methods ------------------------------------------------------------#
+#Admin adds an user to the database
+@app.route('/add_user', methods=['GET', 'POST'])
+def add_user():
+    if is_admin():
+        form = CreateUserForm()
+        if form.validate_on_submit():
+            fname = form.fname.data
+            lname = form.lname.data
+            username = form.username.data
+            password = form.password.data
+            email = form.email.data
+            if not db.session.query(User).filter_by(email=email).first():
+                user = User(username=username, email=email, role='user', fname=fname, lname=lname)
+                user.set_password(password)
+                db.session.add(user)
+                db.session.commit()
+        all_usernames= db.session.query(User.username).all()
+        print(all_usernames, file=sys.stderr)
+        return render_template('add_user.html', form=form)
+    return render_template('invalid_credentials.html')
+
+
 @app.route('/profile')
 @login_required
 def profile():
@@ -177,23 +161,22 @@ def profile():
         fname = current_user.fname
         lname = current_user.lname
         email = current_user.email
-        m_name = current_user.m_name
+        mname = current_user.mname
         dob = current_user.date_of_birth
-        address = current_user.address
-        city = current_user.city
-        state = current_user.state
-        zip_code = current_user.zip_code
         image_file = url_for('static', filename='images/' + current_user.image_file)
         print(fname, file=sys.stderr)
     
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
-                            image_file=image_file, m_name=m_name, date_of_birth=dob, address=address, city=city, state=state,
-                            zip_code=zip_code)
-#===================================================================================================
+                            image_file=image_file, mname=mname, date_of_birth=dob)
 
-#===================================================================================================
-#Edit Profile WORK IN PROGRESS
-#===================================================================================================
+
+#----------------------------------------------------------- Administrator Methods ------------------------------------------------------------#
+
+
+
+
+
+
 '''
 @app.route('/edit_profile')
 @login_required
@@ -209,11 +192,7 @@ def edit_profile():
         db.session.add(user)
         db.session.commit()
     return render_template('edit_profile.html', form=form)'''
-#===================================================================================================
 
-#===================================================================================================
-#uploading and downloading files 
-#===================================================================================================
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -227,33 +206,23 @@ def upload():
         return f'Uploaded: {file.filename}'
     return render_template('index.html')
 
-
 @app.route('/download/<upload_id>')
 def download(upload_id):
     upload = Upload.query.filter_by(id=upload_id).first()
     return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
         
-#===================================================================================================
-
-#===================================================================================================
-#Job adding Functionality
-#===================================================================================================
 @app.route('/jobs')
 @login_required
 def jobs():
     if current_user.is_authenticated:
         title = db.session.query(Job).filter
     return render_template('jobs.html', job_title=title)
-#===================================================================================================
 
-#===================================================================================================
-#Messaging/Chat
-#===================================================================================================
 @app.route('/chat')
 @login_required
 def chat():
     return render_template('chat.html')
-#===================================================================================================
+
 @app.route('/account_recovery', methods=['GET', 'POST'])
 def recover_account():
     form = AccountRecovery()
@@ -263,12 +232,6 @@ def recover_account():
             print("Account Recovered")
     return render_template('account_recovery.html', form=form)
 
-
-
-#JOB SECTION
-#===================================================================================================
-#CREATE JOB
-#===================================================================================================
 @app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
@@ -286,11 +249,8 @@ def add_job():
             #print(all_jobs, file=sys.stderr)
         return render_template('create_jobs.html', form=form)
     return render_template('invalid_credentials.html')
-#===================================================================================================
 
-#===================================================================================================
-#API INFORMATION
-#===================================================================================================
+
 
 #API / SEARCH (API is on top of the file)
 @app.route('/search', methods=['GET', 'POST'])
@@ -339,17 +299,14 @@ def search():
 
 
 
-#===================================================================================================
-#ERRORS
-#===================================================================================================
-#@app.errorhandler('/error505')
-#def error505():
-    r#eturn render_template("505error.html")
-#===================================================================================================
 
 
-#STANDALONE FUNCTION SECTION
-###################################################################
+
+
+
+
+#-----------STANDALONE FUNCTION SECTION--------------#
+#Role Validation-------------------------------------#
 def is_admin():
     '''
     Helper function to determine if authenticated user is an admin.
@@ -397,7 +354,7 @@ def is_faculty():
             return False
     else:
         print('User not authenticated.', file=sys.stderr)
-
+#---------------------------------------------------#
 
 
 
