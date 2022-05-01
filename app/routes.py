@@ -24,16 +24,25 @@ API_URL = environ.get('API_URL')
 EMAIL = environ.get('EMAIL')
 
 
+
+
+
+
 #------------------------------------------------------------ Static Webpages ----------------------------------------------------------------#
 @app.route('/homepage')
 def homepage():
     return render_template('homepage.html')
-
+  
+  
+@app.route('/chat')
+@login_required
+def chat():
+    return render_template('chat.html')
 #------------------------------------------------------------ Static Webpages ----------------------------------------------------------------#
 
 
 
-#------------------------------------------------------------- Account Methods ----------------------------------------------------------------#
+#------------------------------------------------------------- Logging in and Out-----------------------------------------------#
 #Start with here
 @app.route('/')
 def index():
@@ -64,7 +73,12 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+#------------------------------------------------------------- Logging in and Out-----------------------------------------------#
 
+
+
+
+#------------------------------------------------------------- Account Methods ----------------------------------------------------------------#
 #Profile Settings
 @app.route('/settings')
 @login_required
@@ -100,8 +114,9 @@ def change_password():
     Verify that old password matches and the new password and retype also match.
     '''
     return render_template('change_password.html', form = form)
-
-#Create user (basically create and account)
+  
+  
+#Create user (User Method)
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user(): 
     form = CreateUserForm()
@@ -117,14 +132,16 @@ def create_user():
         
         if not db.session.query(User).filter_by(email=email).first():
             user = User(username=username, email=email, role=role, fname=fname,
-                        lname=lname, m_name=mname, date_of_birth=dob)
+                        lname=lname, mname=mname, date_of_birth=dob)
             print(user, file=sys.stderr)
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
+        return redirect(url_for('login'))
     all_usernames= db.session.query(User.username).all()
     print(all_usernames, file=sys.stderr)
     return render_template('create_user.html', form=form)
+
 #------------------------------------------------------------- Account Methods ----------------------------------------------------------------#
 
 
@@ -151,9 +168,13 @@ def add_user():
         print(all_usernames, file=sys.stderr)
         return render_template('add_user.html', form=form)
     return render_template('invalid_credentials.html')
+#----------------------------------------------------------- Administrator Methods ------------------------------------------------------------#
 
 
-@app.route('/profile/<username>')
+
+#---------------------------------------------------------- Profiles --------------------------------------------------------------------------#
+#Profile
+@app.route('/profile/')
 @login_required
 def profile(username):
     if current_user.is_authenticated:
@@ -163,36 +184,103 @@ def profile(username):
         email = current_user.email
         mname = current_user.mname
         dob = current_user.date_of_birth
+
+        address = current_user.address
+        city = current_user.city
+        state = current_user.state
+        zip_code = current_user.zip_code
+        phone_number = current_user.phone_number
+        user_bio = current_user.user_bio
         image_file = url_for('static', filename='images/' + current_user.image_file)
         print(fname, file=sys.stderr)
     
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
-                            image_file=image_file, mname=mname, date_of_birth=dob)
+                            image_file=image_file, mname=mname, date_of_birth=dob, address=address, city=city, state=state,
+                            zip_code=zip_code, phone_number=phone_number, user_bio=user_bio)
 
-
-#----------------------------------------------------------- Administrator Methods ------------------------------------------------------------#
-
-
-
-
-
-
-'''
+@app.route('/account_recovery', methods=['GET', 'POST'])
+def recover_account():
+  form = AccountRecovery()
+  if form.validate_on_submit():
+    username = form.username.data
+    if db.session.query(User).filter_by(username=username).first():
+      print("Account Recovered")
+      return render_template('account_recovery.html', form=form)
+    
+    
+#Edit
 @app.route('/edit_profile')
 @login_required
 def edit_profile():
     form = EditProfileForm()
     if form.validate_on_submit():
+        #---------------------------# 
         address = form.address.data
         city = form.city.data
         state = form.state.data
         zip_code = form.zip_code.data
+        #---------------------------# 
+        phone_number = form.phone_number.data
+        fname = form.fname.data
+        mname = form.mname.data
+        lname = form.lname.data
+        user_bio = form.user_bio.data
+        #---------------------------# 
+        if fname == '':
+            current_user.fname = current_user.fname
+        else:
+            current_user.fname = fname
+            
+        if mname == '':
+            current_user.mname = current_user.mname
+        else:
+            current_user.mname = mname
 
-        user = User(address=address, city=city, state=state, zip_code=zip_code)
-        db.session.add(user)
+        if lname == '':
+            current_user.lname = current_user.lname
+        else:
+            current_user.lname = lname
+
+        if zip_code == '':
+            current_user.zip_code = current_user.zip_code
+        else:
+            current_user.zip_code = zip_code
+
+        if phone_number == '':
+            current_user.phone_number = current_user.phone_number
+        else:
+            current_user.phone_number = phone_number
+
+        if user_bio == '':
+            current_user.user_bio = current_user.user_bio
+        else:
+            current_user.user_bio = user_bio
+
+       
+
+        if state == '':
+            current_user.state = current_user.state
+        else:
+            current_user.state = state
+
+        if city == '':
+            current_user.city = current_user.city       
+        else:
+            current_user.city = city
+
+        if address == '':
+            current_user.address = current_user.address
+        else:
+            current_user.address = address
+
+        db.session.add(current_user)
         db.session.commit()
-    return render_template('edit_profile.html', form=form)'''
 
+        return redirect(url_for('profile'))
+    image_file = url_for('static', filename='images/' + current_user.image_file)
+    return render_template('edit_profile.html', form=form, image_file=image_file)
+  
+  
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -206,32 +294,35 @@ def upload():
         return f'Uploaded: {file.filename}'
     return render_template('index.html')
 
+#---------------------------------------------------------- Profiles --------------------------------------------------------------------------#
+  
+  
+ 
+
+
+
+
+
 @app.route('/download/<upload_id>')
 def download(upload_id):
     upload = Upload.query.filter_by(id=upload_id).first()
     return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
         
+
+
+
+
+
+#-------------------------------------------------------------Jobs---------------------------------------------------------------#
 @app.route('/jobs')
 @login_required
 def jobs():
     if current_user.is_authenticated:
         title = db.session.query(Job).filter
     return render_template('jobs.html', job_title=title)
-
-@app.route('/chat')
-@login_required
-def chat():
-    return render_template('chat.html')
-
-@app.route('/account_recovery', methods=['GET', 'POST'])
-def recover_account():
-    form = AccountRecovery()
-    if form.validate_on_submit():
-        username = form.username.data
-        if db.session.query(User).filter_by(username=username).first():
-            print("Account Recovered")
-    return render_template('account_recovery.html', form=form)
-
+  
+  
+  
 @app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
@@ -249,10 +340,8 @@ def add_job():
             #print(all_jobs, file=sys.stderr)
         return render_template('create_jobs.html', form=form)
     return render_template('invalid_credentials.html')
-
-
-
 #API / SEARCH (API is on top of the file)
+#-----------------------API SECTION------------------------------------------------------------#
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     headers =   {'Host': API_HOST,
@@ -295,7 +384,10 @@ def search():
         return render_template('view_jobs.html', job_results=job_results)
     else:
         return render_template('search.html', form=form)
-#---------------------------------------
+#------------------------ API SECTION -------------------------------------------------------------#
+#-------------------------------------------------------------Jobs---------------------------------------------------------------#
+                           
+                         
 
 
 #---------------------App Error--------------------------------------------------------------------#

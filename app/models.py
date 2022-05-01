@@ -17,6 +17,7 @@ from io import BytesIO
 # User extends the flask_login defined UserMixin class.  UserMixin
 # provides default functionality that allows us to keep track of
 # authenticated user
+
 #===================================================================================================
 #Model's Python file is used to create the database stuff
 #Please make sure to do db.create_all()
@@ -35,8 +36,14 @@ class User(UserMixin, db.Model):
     fname = db.Column(db.String(64))
     lname = db.Column(db.String(64))
     mname = db.Column(db.String(64))
+    address = db.Column(db.String(128))
+    city = db.Column(db.String(128))
+    zip_code=db.Column(db.String(5))
+    state=db.Column(db.String(64))
     date_of_birth = db.Column(db.Date)
+    phone_number = db.Column(db.String(128))
     user_bio = db.Column(db.String(512))
+    
     #Password Salting
     def set_password(self, password):
         #Store hashed (encrypted) password in database

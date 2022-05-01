@@ -79,7 +79,7 @@ login.login_view = 'login'
 from app import routes, models
 from app.models import *
 
-# Create DB schema
+
 #Drop Database to refresh (Comment out later once statisfied)
 db.drop_all()
 db.create_all()

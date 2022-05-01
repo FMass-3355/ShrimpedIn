@@ -1,52 +1,64 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="p-3 mb-2">
-	<div class="container">
-		
-		<img src="{{ image_file }}" width="220px" height="220px" \
-		style="display:block;margin:auto; padding: auto; border: 2.5px solid #f172a1; border-radius: 50%;" class="center">
-		<br>
-		<h1 style="padding-bottom: 2.5%; text-align: center; ">{{ username }}</h1>
-		<br>
-
-		<div id="body_section" style="background-color:#fde9f2; border: 1px solid rgb(52, 11, 141); padding: 1%;">
-			<div id="photo">
-				<div class="row">
-					<div class="col-md-6"><h2>User Bio</h2></div>
-					<div class="col-md-6"><a class="btn btn-outline-dark" style="float: right;">Edit Profile</a></div>
-				</div>
-
-				<p>First Name: {{ fname }}</p><br>
-
-				<p>Last Name: {{ lname }}</p><br>
-
-				<p>MI: {{ m_name }}</p><br>
+<html>
+	<body>
+		<section class="p-3 mb-2">
+			<div class="container" style="padding-top: 3%;">
 				
-				<p>Email: {{ email }}</p><br>
-
-				<p>Date of Birth: {{ date_of_birth }}</p><br>
-
-				<p>Address: {{ address }} {{ city }} {{ state }} {{ zip_code }}</p>
-			</div><hr>
-
-			<div id="resume">
-				<h2>Resume</h2>
-				<div id="pic_submit" class="center">
-					<form method="POST" action="/upload" enctype="multipart/form-data">
-						<input type="file" name="file">
-						<button>Upload</button>
-					</form>
-				</div>
-			</div><hr>
-
-			<div id="experience">
-				<h2>Work Experience</h2>
-			</div>
-		</div>
-
-		<br>
+				<img src="{{ image_file }}" width="220px" height="220px" \
+				style="display:block;margin:auto; padding: auto; border: 2.5px solid #f172a1; border-radius: 50%;" class="center">
+				<br>
+				<h1 style="padding-bottom: 2.5%; text-align: center; ">{{ username }}</h1>
+				<br>
 		
-	</div>
-</section>
+				<div id="body_section" style="background-color:#fde9f2; border: 1px solid rgb(52, 11, 141); padding: 1%;">
+					<div id="photo">
+						<div class="row">
+							<div class="col-md-6"><h2>User Bio</h2></div>
+							<div class="col-md-6"><a href="/edit_profile" class="btn btn-outline-dark" \
+								style="float: right;">Edit Profile</a></div>
+						</div>
+						<p>{{ user_bio }}</p><hr>
+
+						<div id="resume">
+							<h2>Resume</h2>
+							<div id="pic_submit" class="center">
+								<form method="POST" action="/upload" enctype="multipart/form-data">
+									<input type="file" name="file">
+									<button>Upload</button>
+								</form>
+							</div>
+						</div><hr>
+			
+						<div id="experience">
+							<h2>Work Experience</h2>
+						</div><hr>
+
+						<h2>Info</h2>
+						
+						<p>First Name: {{ fname }}</p><br>
+		
+						<p>Last Name: {{ lname }}</p><br>
+		
+						<p>MI: {{ mname }}</p><br>
+
+						<p>Email: {{ email }}</p><br>
+		
+						<p>Date of Birth: {{ date_of_birth }}</p><br>
+						
+						{% if current_user.address == "No Address" %}
+						<p>Address: No Address</p><br>
+						{% else %}
+						<p>Address: {{ address }}, {{ city }}, {{ state }} {{ zip_code }}</p><br>
+						{% endif %}
+						<p>Phone Number: {{ phone_number }}</p>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+</html>
+
+
 {% endblock %}

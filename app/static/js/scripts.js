@@ -18,7 +18,6 @@ window.onclick = function(event) {
         }
     }
 
-
 function displayJob(){
     document.getElementById("Job-Detail")
     document.createElement(

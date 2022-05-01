@@ -13,7 +13,7 @@
     </head>
 
     <body>
-        <div class="container-fluid" style="padding-top: 10%;">
+        <div class="container-fluid" style="padding-top: 7%;">
             <div class="row">
                 <div>      
                     <h1 style="text-align: center; padding-left: 10px; font-size: 75px;">
@@ -24,46 +24,50 @@
                     </h1>    
                 </div>
                 <div class="col-md-10 offset-md-1">
-                    <h1 style="text-align: center; padding-left: 10px;">Create Account</h1><br><br>
+                    <h1 style="text-align: center; padding-left: 5px;">Create Account</h1><br>
                     <div class="row">
-                        <div class="col-md-10 offset-md-1" style="padding-bottom: 5%;">
+                        <div class="col-md-10 offset-md-1" style="padding-bottom: 3%;">
                             <form action="" method="post" novalidate>
                                 {{ form.hidden_tag() }}
                                 <p class="login_box">
-                                    {{ form.username.label }}<br>
-                                    {{ form.username(size=32) }}
+                                    {{ form.username.label(class="form-control-label") }}<br>
+                                    {{ form.username(class="form-control form-control-md") }}
                                 </p>
 
                                 <p class="login_box">
-                                    {{ form.password.label }}<br>
-                                    {{ form.password(size=32) }}
+                                    {{ form.password.label(class="form-control-label") }}<br>
+                                    {{ form.password(class="form-control form-control-md") }}
                                 </p>
 
                                 <p class="login_box">
-                                    {{ form.email.label }}<br>
-                                    {{ form.email(size=32) }}
+                                    {{ form.email.label(class="form-control-label") }}<br>
+                                    {{ form.email(class="form-control form-control-md") }}
                                 </p><br>
                                 
                                 <p class="login_box">
-                                    {{ form.role.label}}
-                                    {{ form.role }}
+                                    {{ form.role.label(class="form-control-label")}}
+                                    {{ form.role(class="form-control form-control-md") }}
                                 </p><br>
 
                                 <p class="login_box">
-                                    {{ form.fname.label }}<br>
-                                    {{ form.fname(size=32) }}
+                                    {{ form.fname.label(class="form-control-label") }}<br>
+                                    {{ form.fname(class="form-control form-control-md") }}
                                 </p>
                                 <p class="login_box">
-                                    {{ form.lname.label }}<br>
-                                    {{ form.lname(size=32) }}
+                                    {{ form.lname.label(class="form-control-label") }}<br>
+                                    {{ form.lname(class="form-control form-control-md") }}
+                                </p><br>
+                                <p class="login_box">
+                                    {{ form.date_of_birth.label(class="form-control-label") }}<br>
+                                    {{ form.date_of_birth(class="form-control form-control-md") }}
                                 </p><br>
 
-                                <p class="btn" style="display: flex; justify-content: center;"> {{ form.submit() }} </p>
+                                <p href="/login" style="display: flex; justify-content: center;"> {{ form.submit(class="btn btn-success") }} </p>
                                 <hr style="width: 50%; margin: auto;">
                             </form>
 
-                            <a class="btn btn-outline-dark" href="/login" \
-                            style="display: flex; margin: auto; width: fit-content; background-color: white;">Back</a>
+                            <a class="btn" href="/login" \
+                            style="display: flex; margin: auto; width: fit-content; background-color: pink;">Back</a>
                         </div>
                     </div>
                 </div>
