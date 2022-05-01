@@ -1,40 +1,44 @@
-#===================================================================================================
-#Imports
-#===================================================================================================
-from secrets import choice
 from flask_wtf import FlaskForm
 from wtforms import *
-from wtforms.widgets import TextArea
 from wtforms.validators import *
-#===================================================================================================
 
-#===================================================================================================
-#Accounts Section
-#===================================================================================================
-#===================================================================================================
-#Logging in Form
-#===================================================================================================
-class LoginForm(FlaskForm):
+
+
+
+
+#----------------------New User Creation--------------------------------------------------#
+class CreateUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    role = SelectField('Role', choices=[('student', 'student'), ('faculty', 'faculty'), ('recruiter', 'recruiter'), ('regular','regular')])
+    fname = StringField('First Name', validators=[DataRequired()])
+    lname = StringField('Last Name', validators=[DataRequired()])
+    mname = StringField('MI')
+    date_of_birth = DateField('Date of Birth (YYYY/MM/DD) (In Progress)')
+    submit = SubmitField('Create Account')
+#----------------------New User Creation--------------------------------------------------#
+
+
+#------------------Logging into Shrimpedin--------------------#
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(message="Require a login input")])
+    password = PasswordField('Password', validators=[DataRequired(message="Require a password")])
     submit = SubmitField('Sign In')
     #add the create account button
     #add the account recovery button
-#===================================================================================================
+#------------------Logging into Shrimpedin--------------------#
 
-#===================================================================================================
-#Change Password Form
-#===================================================================================================
+
+
+#----------------------Account settings----------------------------------------------------#
 class ChangePasswordForm(FlaskForm):
     old_pass = PasswordField('Old password', validators=[DataRequired()])
     new_pass = PasswordField('New password', validators=[DataRequired()])
     new_pass_retype = PasswordField('Retype new password', validators=[DataRequired()])
     submit = SubmitField('Change password')
-#===================================================================================================
 
-#===================================================================================================
-#Create User Form
-#===================================================================================================
+    
 class CreateUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -49,11 +53,7 @@ class CreateUserForm(FlaskForm):
     #     user = User.query.filter_by(username=username.data).first()
     #     if user:
     #         raise ValueError('TAKEN')
-#===================================================================================================
 
-#===================================================================================================
-# EDIT PROFILE A WORK IN PROGRESS
-#===================================================================================================
 class EditProfileForm(FlaskForm):
     phone_number = StringField('Phone Number')
     address = StringField('Street Address')
@@ -70,44 +70,43 @@ class EditProfileForm(FlaskForm):
     user_bio = StringField('User Bio', widget=TextArea())
     lname = StringField('Last Name')
     submit = SubmitField('Update Profile')
-#===================================================================================================
 
-#===================================================================================================
-#Account Recovery Form
-#===================================================================================================
+   
+
 class AccountRecovery(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     submit = SubmitField('Recover Account')
-#===================================================================================================
-#===================================================================================================
+#----------------------Account settings----------------------------------------------------#
 
 
 
-
-
-#For Jobs such as adding and Searching
-#===================================================================================================
-#Add Job Form
-#===================================================================================================
+#----------------job forms------------------#
 class AddJob(FlaskForm):
     job_title = StringField('Job Title', validators=[DataRequired()])
     company = StringField('Company', validators=[DataRequired()])
     job_description = StringField('Description', validators=[DataRequired()])
     url = StringField('URL', validators=[DataRequired()])
     submit = SubmitField('Submit')
-#===================================================================================================
 
-#===================================================================================================
-#search jobs form
-#===================================================================================================
+
+
+
+
+
+
+#----------------job forms------------------#
+
+
+
+
+#--------------- Search Form -------------------------#
 class SearchForm(FlaskForm):
      keyword = StringField('Keyword', validators=[DataRequired()])
      city = StringField('City', validators=[DataRequired()])
      state = StringField('State', validators=[DataRequired()])
      submit = SubmitField('Search')
-#===================================================================================================    
 
 class SearchForm2(FlaskForm):
     keyword = StringField('Keyword', validators=[DataRequired()])
     submit = SubmitField('Search')
-
+#--------------- Search Form -------------------------#
