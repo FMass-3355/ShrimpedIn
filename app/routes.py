@@ -153,9 +153,9 @@ def add_user():
     return render_template('invalid_credentials.html')
 
 
-@app.route('/profile')
+@app.route('/profile/<username>')
 @login_required
-def profile():
+def profile(username):
     if current_user.is_authenticated:
         username = current_user.username
         fname = current_user.fname
@@ -298,9 +298,14 @@ def search():
 #===================================================================================================
 
 
+#---------------------App Error--------------------------------------------------------------------#
+@app.errorhandler(404)
+def error404(error):
+    return render_template('404.html'), 404
 
-
-
+@app.errorhandler(500)
+def error500(error):
+    return render_template('500.html'), 500
 
 
 
