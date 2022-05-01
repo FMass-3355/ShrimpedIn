@@ -1,3 +1,4 @@
+from tkinter.tix import Select
 import requests
 from app import app
 from flask import render_template, redirect, url_for, flash
@@ -161,6 +162,7 @@ def create_user():
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
+        return redirect(url_for('login'))
     all_usernames= db.session.query(User.username).all()
     print(all_usernames, file=sys.stderr)
     return render_template('create_user.html', form=form)
@@ -183,32 +185,47 @@ def profile():
         city = current_user.city
         state = current_user.state
         zip_code = current_user.zip_code
+        phone_number = current_user.phone_number
         image_file = url_for('static', filename='images/' + current_user.image_file)
         print(fname, file=sys.stderr)
     
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
                             image_file=image_file, m_name=m_name, date_of_birth=dob, address=address, city=city, state=state,
-                            zip_code=zip_code)
+                            zip_code=zip_code, phone_number=phone_number)
 #===================================================================================================
 
 #===================================================================================================
 #Edit Profile WORK IN PROGRESS
 #===================================================================================================
-'''
-@app.route('/edit_profile')
+@app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
     form = EditProfileForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit(): 
         address = form.address.data
         city = form.city.data
         state = form.state.data
         zip_code = form.zip_code.data
-
-        user = User(address=address, city=city, state=state, zip_code=zip_code)
-        db.session.add(user)
+        phone_number = form.phone_number.data
+        fname = form.fname.data
+        m_name = form.m_name.data
+        lname = form.lname.data
+        email = form.email.data
+        username = form.username.data
+        current_user.fname = fname        
+        current_user.m_name = m_name
+        current_user.lname = lname
+        current_user.email = email
+        current_user.username = username
+        current_user.address = address
+        current_user.city = city
+        current_user.state = state
+        current_user.zip_code = zip_code
+        current_user.phone_number = phone_number
+        db.session.add(current_user)
         db.session.commit()
-    return render_template('edit_profile.html', form=form)'''
+        return redirect(url_for('profile'))
+    return render_template('edit_profile.html', form=form)
 #===================================================================================================
 
 #===================================================================================================

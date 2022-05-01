@@ -13,7 +13,6 @@ from sqlalchemy.ext.declarative import declarative_base
 # authenticated user
 
 
-
 #===================================================================================================
 #Model's Python file is used to create the database stuff
 #Please make sure to do db.create_all()
@@ -43,9 +42,9 @@ class User(UserMixin, db.Model):
     # date_year = db.Column(db.Integer(4))
     # date_month = db.Column(db.String(64))#maybe int for month number
     # date_day = db.Column(db.Integer(2)) 
-    phone_number = db.Column(db.Integer)
+    phone_number = db.Column(db.String(20))
     address = db.Column(db.String(64))
-    zip_code = db.Column(db.Integer) #imad didnt have () so might not work
+    zip_code = db.Column(db.String(10)) #imad didnt have () so might not work
     city = db.Column(db.String(64))
     state = db.Column(db.String(64)) #want to have a drop down list that can fill in state
     #profile_pic *maybe*

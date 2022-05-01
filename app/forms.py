@@ -1,15 +1,11 @@
 #===================================================================================================
 #Imports
 #===================================================================================================
+from secrets import choice
 from flask_wtf import FlaskForm
 from wtforms import *
-from wtforms.validators import DataRequired
+from wtforms.validators import *
 #===================================================================================================
-
-
-
-
-
 
 #===================================================================================================
 #Accounts Section
@@ -43,10 +39,10 @@ class CreateUserForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
     role = SelectField('Role', choices=[('student', 'student'), ('faculty', 'faculty'), ('recruiter', 'recruiter')])
-    fname = StringField('First Name', validators=[DataRequired()])
+    fname = StringField('First Name', validators=[DataRequired()])#length(min=2, max=64) Testing stuff with min and max length
     lname = StringField('Last Name', validators=[DataRequired()])
     mname = StringField('MI')
-    date_of_birth = DateField('Date of Birth (YYYY/MM/DD) (In Progress)')
+    date_of_birth = DateField('Date of Birth')
     submit = SubmitField('Create Account')
     # def validate_username(self, username):
     #     user = User.query.filter_by(username=username.data).first()
@@ -58,11 +54,22 @@ class CreateUserForm(FlaskForm):
 # EDIT PROFILE A WORK IN PROGRESS
 #===================================================================================================
 class EditProfileForm(FlaskForm):
+    phone_number = StringField('Phone Number')
     address = StringField('Street Address')
     city = StringField('City')
-    state = StringField('State')
+    state = SelectField('State', choices=['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 
+                                        'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS',
+                                         'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 
+                                         'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 
+                                         'WI', 'WY'])
     zip_code = StringField('Zip Code')
-    submit = SubmitField('Complete Edits')
+    phone_number = StringField('Phone Number')
+    fname = StringField('First Name')
+    m_name = StringField('Middle Initial')
+    lname = StringField('Last Name')
+    email = StringField('Email')
+    username = StringField('Username')
+    submit = SubmitField('Update Profile')
 #===================================================================================================
 
 #===================================================================================================
