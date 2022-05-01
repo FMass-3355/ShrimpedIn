@@ -295,18 +295,20 @@ def search():
         return render_template('view_jobs.html', job_results=job_results)
     else:
         return render_template('search.html', form=form)
-#===================================================================================================
+#---------------------------------------
 
 
 #---------------------App Error--------------------------------------------------------------------#
+#page not found
 @app.errorhandler(404)
 def error404(error):
     return render_template('404.html'), 404
 
+#failed db conenction
 @app.errorhandler(500)
 def error500(error):
     return render_template('500.html'), 500
-
+#---------------------App Error--------------------------------------------------------------------#
 
 
 

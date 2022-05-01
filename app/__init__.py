@@ -86,15 +86,18 @@ db.create_all()
 
 
 
+
+    
+
+
+#--------- Sample Users for the database ---------------#
+#-------------Test users--------------------------------#
 user = User.query.filter_by(username='admin').first()
 if user is None:
     user_admin = User(username='admin', role='admin')
     user_admin.set_password('csc330sp22')
     db.session.add(user_admin)
     db.session.commit()
-
-
-
 
 user = User.query.filter_by(username='user').first()
 if user is None:
@@ -123,5 +126,76 @@ if user is None:
     fac_user.set_password('csc330sp22')
     db.session.add(fac_user)
     db.session.commit()
-#===================================================================================================
+#-------------Test users-------------------------------#
+
+
+#------------------More Detailed Users -----------------#
+user=User.query.filter_by(username='MarcusP11').first()
+if user is None:
+    custom_user = User(username='MarcusP11', email='MarP1999@southernct.edu', role='student', fname='Marcus', lname='Peterson', date_of_birth='1999-02-02', user_bio="""
+    Up comming Graduate student of 2025, Major: Mechanical Engineering, Minor: Mathematics. Looking for Mechanical Engineering related jobs. I have skills in CAD drawings,
+    assisted in construction management.""")
+    custom_user.set_password('123')
+    db.session.add(custom_user)
+    db.session.commit()
+
+user=User.query.filter_by(username='EmilJohn23').first()
+if user is None:
+    custom_user = User(username='EmilJohn23', email='EmilyJohonson02@southernct.edu', role='student', fname='Emily', lname='Johnson', date_of_birth='1999-02-02', user_bio="""
+    Senior at SSCSU, Bachelors in business and finance.""")
+    custom_user.set_password('123')
+    db.session.add(custom_user)
+    db.session.commit()
+
+user=User.query.filter_by(username='IAntonio05').first()
+if user is None:
+    custom_user = User(username='IAntonio05', email='Iantonio05@southernct.edu', role='professor', fname='Ian', lname='Antonio', date_of_birth='1988-02-02', user_bio="""
+    Ph.D in Aerospace engineering. Masters in Bio-engineering. AI Developer at Google. IEEE board member. Professor at SCSU.""")
+    custom_user.set_password('123')
+    db.session.add(custom_user)
+    db.session.commit()
+
+user=User.query.filter_by(username='ArtMar23').first()
+if user is None:
+    custom_user = User(username='ArtMar23', email='artmar80@gmail.com', role='recruiter', fname='Arthur', lname='Martinez', date_of_birth='1999-02-02')
+    custom_user.set_password('123')
+    db.session.add(custom_user)
+    db.session.commit()
+
+user=User.query.filter_by(username='FrankyMaz').first()
+if user is None:
+    custom_user = User(username='FrankyMaz', email='FraMaz45@hotmail.com', role='regular', fname='Franky', lname='Mazes', date_of_birth='1999-02-02')
+    custom_user.set_password('123')
+    db.session.add(custom_user)
+    db.session.commit()
+#------------------More Detailed Users -----------------#
+
+
+#---------------------Companies--------------------------#
+company = Company.query.filter_by(company_name='Rockeye Technologies').first()
+if company is None:
+    company = Company(company_name='Rockeye Technologies', address='513 Iron industrial road', zip_code='06142', city='Metropolis', state='New York')
+    db.session.add(company)
+    db.session.commit()
+
+company = Company.query.filter_by(company_name='Red Shift Bio-Labs').first()
+if company is None:
+    company = Company(company_name='Red Shift Bio-Labs', address='54 Alison Bacterium', zip_code='07321', city='Gotham', state='New York')
+    db.session.add(company)
+    db.session.commit()
+
+company = Company.query.filter_by(company_name='Genuidine Business Corp.').first()
+if company is None:
+    company = Company(company_name='Genuidine Business Corp.', address='370 Eager Street', zip_code='11321', city='New York', state='New York')
+    db.session.add(company)
+    db.session.commit()
+#---------------------Companies--------------------------#
+
+
+user=User.query.filter_by(username='ArtMar23', role='recruiter').first()
+company = Company.query.filter_by(company_name='Rockeye Technologies').first()
+if user is not None:
+    recruiter_Add=Recruiter(fk_user_id=user.id, fk_company_id=company.id)
+    db.session.add(recruiter_Add)
+    db.session.commit()
 

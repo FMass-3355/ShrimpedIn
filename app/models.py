@@ -63,8 +63,8 @@ class Recruiter(UserMixin, db.Model):
 class Company(db.Model):
     __tablename__ = 'company'
     id = db.Column(db.Integer, primary_key=True)
-    company_name = db.Column(db.String(64)) #see how long should be for title and desc.
-    company_description = db.Column(db.String(64))
+    company_name = db.Column(db.String(64), unique=True, nullable=False) #see how long should be for title and desc.
+    company_description = db.Column(db.String(1512), default='No company description')
     address = db.Column(db.String(64))
     zip_code = db.Column(db.Integer) 
     city = db.Column(db.String(64))
@@ -105,9 +105,6 @@ class Associations_Application(db.Model):
    A_coverletter=db.Column(db.LargeBinary, nullable=True)
 #-----Association table (M:N) 0-----#
 
-
-
-#------------ Company ----------------#
 
 
 # API Sprint 3
