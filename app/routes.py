@@ -176,7 +176,7 @@ def add_user():
 #Profile
 @app.route('/profile/')
 @login_required
-def profile(username):
+def profile():
     if current_user.is_authenticated:
         username = current_user.username
         fname = current_user.fname
@@ -191,21 +191,21 @@ def profile(username):
         zip_code = current_user.zip_code
         phone_number = current_user.phone_number
         user_bio = current_user.user_bio
-        image_file = url_for('static', filename='images/' + current_user.image_file)
+        #image_file = url_for('static', filename='images/' + current_user.image_file)
         print(fname, file=sys.stderr)
-    
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
-                            image_file=image_file, mname=mname, date_of_birth=dob, address=address, city=city, state=state,
+                            mname=mname, date_of_birth=dob, address=address, city=city, state=state,
                             zip_code=zip_code, phone_number=phone_number, user_bio=user_bio)
+    #image_file=image_file
 
 @app.route('/account_recovery', methods=['GET', 'POST'])
 def recover_account():
-  form = AccountRecovery()
-  if form.validate_on_submit():
-    username = form.username.data
+    form = AccountRecovery()
+    if form.validate_on_submit():
+        username = form.username.data
     if db.session.query(User).filter_by(username=username).first():
-      print("Account Recovered")
-      return render_template('account_recovery.html', form=form)
+        print("Account Recovered")
+        return render_template('account_recovery.html', form=form)
     
     
 #Edit
@@ -277,7 +277,7 @@ def edit_profile():
         db.session.commit()
 
         return redirect(url_for('profile'))
-    image_file = url_for('static', filename='images/' + current_user.image_file)
+    image_file = url_for('static', filename='images/' + 'profile.png')
     return render_template('edit_profile.html', form=form, image_file=image_file)
   
   
@@ -295,24 +295,15 @@ def upload():
     return render_template('index.html')
 
 #---------------------------------------------------------- Profiles --------------------------------------------------------------------------#
-  
-  
- 
 
 
-
-
-
+#-------------- Uploading Documents -------------------------#
 @app.route('/download/<upload_id>')
 def download(upload_id):
     upload = Upload.query.filter_by(id=upload_id).first()
     return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
+#-------------- Uploading Documents -------------------------#
         
-
-
-
-
-
 #-------------------------------------------------------------Jobs---------------------------------------------------------------#
 @app.route('/jobs')
 @login_required

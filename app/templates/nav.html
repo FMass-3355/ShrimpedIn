@@ -1,7 +1,7 @@
 <!-- Navigation bar using bootstrap -->
 
 <!---->
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding: 0%; position:fixed; width: 100%; ">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding: 0%; width: 100%; ">
   <div class="container-fluid" style="background-color: #f172a1;">
 
 
@@ -14,45 +14,72 @@
 
     <!--actual navbar-->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-        <li class="nav-item">
+        <li id="homepage" class="nav-item">
           <a class="nav-link active" aria-current="page" href="/homepage" style="color: #f0ebf4;">Home</a>
         </li>   
 
-        <li class="nav-item">
+        <li id="profile" class="nav-item">
           <a class="nav-link" href="/profile" style="color: #f0ebf4;">Profile</a>
         </li>
 
-        <li class="nav-item">
+        <li id="job_posting" class="nav-item">
           <a class="nav-link" href="/jobs" style="color: #f0ebf4;">Job Posting</a>
         </li>
         
-        <li class="nav-item">
+        <li id="Messages" class="nav-item">
           <a class="nav-link" href="/chat" style="color: #f0ebf4;">Messages</a>
         </li>
+
         {% if current_user.role == 'admin' %}
-        <li class="nav-item">
+          <li id="create_user" class="nav-item">
           <a class="nav-link" href="/add_user" style="color: #f0ebf4;">Create Another User</a>
-        </li>
+          </li>
         {% endif %}
         
-        <li class="nav-item dropdown">
+        {% if current_user.role == 'recruiter' or current_user.role=='admin'%}
+        <li id="menu_job" class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" \
+          aria-expanded="false" style="color: #f0ebf4;">
+            Job Posting
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li class="nav-item">
+              <a class="nav-link" href="">Create New Job</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="">Edit Job</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href=""> Close Job</a>
+            </li>
+            {% if current_user.role == 'admin'%}
+            <li class="nav-item">
+              <a class="nav-link" href="">Remove Job</a>
+            </li>
+            {% endif %}
+          </ul>
+        </li>
+        {% endif %}
+
+
+
+        <li id="account settings" class="nav-item dropdown">
           <a class="nav-link dropwdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" \
           aria-expanded="false" style="color: #f0ebf4;">
             Account settings
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown"navbar>
-            <li class="nav=item">
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li class="nav-item">
               <a class="nav-link" href="/change_password">Change Password</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/logout">Logout</a>
-            </li>
+           
           </ul>
         </li>
-
+          <li id="Logout" class="nav-item">
+            <a class="nav-link" href="/logout" style="color: #f0ebf4;">Logout</a>
+          </li>
     </div>
 
   </div>
