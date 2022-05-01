@@ -65,7 +65,7 @@ class EditProfileForm(FlaskForm):
     zip_code = StringField('Zip Code')
     phone_number = StringField('Phone Number')
     fname = StringField('First Name')
-    m_name = StringField('Middle Initial')
+    mname = StringField('Middle Initial')
     lname = StringField('Last Name')
     email = StringField('Email')
     username = StringField('Username')

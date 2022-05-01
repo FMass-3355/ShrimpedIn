@@ -157,7 +157,7 @@ def create_user():
         
         if not db.session.query(User).filter_by(email=email).first():
             user = User(username=username, email=email, role=role, fname=fname,
-                        lname=lname, m_name=mname, date_of_birth=dob)
+                        lname=lname, mname=mname, date_of_birth=dob)
             print(user, file=sys.stderr)
             user.set_password(password)
             db.session.add(user)
@@ -179,7 +179,7 @@ def profile():
         fname = current_user.fname
         lname = current_user.lname
         email = current_user.email
-        m_name = current_user.m_name
+        mname = current_user.mname
         dob = current_user.date_of_birth
         address = current_user.address
         city = current_user.city
@@ -190,7 +190,7 @@ def profile():
         print(fname, file=sys.stderr)
     
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
-                            image_file=image_file, m_name=m_name, date_of_birth=dob, address=address, city=city, state=state,
+                            image_file=image_file, mname=mname, date_of_birth=dob, address=address, city=city, state=state,
                             zip_code=zip_code, phone_number=phone_number)
 #===================================================================================================
 
@@ -208,12 +208,12 @@ def edit_profile():
         zip_code = form.zip_code.data
         phone_number = form.phone_number.data
         fname = form.fname.data
-        m_name = form.m_name.data
+        mname = form.mname.data
         lname = form.lname.data
         email = form.email.data
         username = form.username.data
         current_user.fname = fname        
-        current_user.m_name = m_name
+        current_user.mname = mname
         current_user.lname = lname
         current_user.email = email
         current_user.username = username

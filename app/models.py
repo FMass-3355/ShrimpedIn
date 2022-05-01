@@ -34,7 +34,7 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(64))
     password_hash = db.Column(db.String(256), unique=True)
     fname = db.Column(db.String(64))
-    m_name = db.Column(db.String(64))
+    mname = db.Column(db.String(64))
     lname = db.Column(db.String(64))
 
     image_file = db.Column(db.String(20), default='profile.png')
