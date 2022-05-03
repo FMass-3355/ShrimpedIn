@@ -17,10 +17,15 @@
       </thead>
       <tbody>
         {% for job in job_results %}
+        
         <tr>
           <td>{{job.title}}</td>
           <td>{{job.location}}</td>
+          {% if job.retrieved == 'internal' %}
+          <td><a href="/apply_job">Apply</a></td>
+          {% elif job.retrieved == 'external' %}
           <td><a href={{job.URI}}>click here</a></td>
+          {% endif %}
         </tr>
         {% endfor %}
       </tbody>

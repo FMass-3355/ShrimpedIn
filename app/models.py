@@ -100,6 +100,25 @@ class Job(db.Model):
     job_id=relationship("Associations_Application", backref='jobs')
 #------------------Job----------------#
 
+# class Education(db.Model):
+#     __tablename__ = 'education'
+#     id = db.Column(db.Integer, primary_key=True)
+
+#     user_id = Column(Integer, ForeignKey('users.id'))
+
+# class Experience(db.Model):
+#     __tablename__ = 'experience'
+#     id = db.Column(db.Integer, primary_key=True)
+
+#     user_id = Column(Integer, ForeignKey('users.id'))
+
+# class Skill(db.Model):
+#     __tablename__ = 'skill'
+#     id = db.Column(db.Integer, primary_key=True)
+
+#     user_id = Column(Integer, ForeignKey('users.id'))
+
+
 
 
 #-----Association table (M:N) 0-----#
@@ -107,17 +126,22 @@ class Job(db.Model):
 class Associations_Application(db.Model):
    __tablename__ = 'associations_applications'
    id = db.Column(db.Integer, primary_key=True)
-   fk_job_id=db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
+   fk_job_id=db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=True) #MAKE FALSE AFTER TESTING
    fk_user_id= db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
    A_resume=db.Column(db.LargeBinary, nullable=True)
    A_coverletter=db.Column(db.LargeBinary, nullable=True)
+   
+
+
 #-----Association table (M:N) 0-----#
 
 
 
 # API Sprint 3
+#NOT PART OF DATABASE MODEL
 class JobInfo:
-    def __JobInfo__(title, URI, location):
+    def __JobInfo__(retrieved, title, URI, location):
+        retrieved = retrieved
         title = title
         URI = URI
         location = location
@@ -142,3 +166,5 @@ class Upload(db.Model):
 def load_user(id):
     return db.session.query(User).get(int(id))
 #===================================================================================================
+
+

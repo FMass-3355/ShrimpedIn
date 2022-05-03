@@ -369,6 +369,19 @@ def add_job():
         return render_template('create_jobs.html', form=form)
         
     return render_template('invalid_credentials.html')
+
+@app.route('/apply_job', methods=['GET', 'POST'])
+@login_required
+def apply_job():
+    if is_student():
+        # form=ApplyJob()
+        #exists = db.session.query(Job.id).filter_by(user_id=current_user.id, doc_type="profile_pic").first() is not None
+        application = Associations_Application(fk_user_id=current_user.id)
+        db.session.add(application)
+        db.session.commit()
+        return render_template('application.html')
+        
+    return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
 @app.route('/search', methods=['GET', 'POST'])
@@ -393,7 +406,9 @@ def search():
          # objects (job_results)
 
         for item in db.session.query(Job).filter(Job.job_title==keyword):
-            job = JobInfo()
+            # job_retrieved = 'internal'
+            job = JobInfo() #this class is located in models.py, it does not create a table and is not used (investigate)
+            job.retrieved = 'internal'
             job.title = item.job_title
             job.URI = item.job_url
             job.location = item.company
@@ -403,7 +418,9 @@ def search():
         
         
         for item in response_json['SearchResult']['SearchResultItems']:
+            # job_retrieved = 'external'
             job = JobInfo()
+            job.retrieved = 'external'
             job.URI = item['MatchedObjectDescriptor']['PositionURI']
             job.title = item['MatchedObjectDescriptor']['PositionTitle']
             job.location = item['MatchedObjectDescriptor']['PositionLocationDisplay']
