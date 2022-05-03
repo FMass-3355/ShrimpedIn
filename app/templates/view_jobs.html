@@ -24,7 +24,8 @@
           {% if job.retrieved == 'internal' %}
           <td><a href="/apply_job">Apply</a></td>
           {% elif job.retrieved == 'external' %}
-          <td><a href={{job.URI}}>click here</a></td>
+          <!-- <td><a href={{job.URI}}>click here</a></td> -->
+          <td><a href={{job.URI}} target="_blank">click here</a></td>
           {% endif %}
         </tr>
         {% endfor %}
