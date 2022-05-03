@@ -81,8 +81,8 @@ from app.models import *
 
 
 #Drop Database to refresh (Comment out later once statisfied)
-db.drop_all()
-db.create_all()
+# db.drop_all()
+# db.create_all()
 
 
 
@@ -155,7 +155,7 @@ if user is None:
     db.session.add(custom_user)
     db.session.commit()
 
-user=User.query.filter_by(username='ArtMar23').first()
+user=db.session.query(User).filter_by(username='ArtMar23').first()
 if user is None:
     custom_user = User(username='ArtMar23', email='artmar80@gmail.com', role='recruiter', fname='Arthur', lname='Martinez', date_of_birth='1999-02-02')
     custom_user.set_password('123')
@@ -194,7 +194,7 @@ if company is None:
 
 user=User.query.filter_by(username='ArtMar23', role='recruiter').first()
 company = Company.query.filter_by(company_name='Rockeye Technologies').first()
-if user is not None:
+if (user is not None and company is not None) and Recruiter.query.filter_by(fk_user_id=user.id, fk_company_id=company.id).first() is None:
     recruiter_Add=Recruiter(fk_user_id=user.id, fk_company_id=company.id)
     db.session.add(recruiter_Add)
     db.session.commit()

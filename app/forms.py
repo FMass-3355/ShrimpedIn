@@ -3,6 +3,9 @@ from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
 from wtforms.widgets import TextArea
+from flask_wtf.file import FileField
+
+
 #----------------------New User Creation--------------------------------------------------#
 class CreateUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -12,6 +15,7 @@ class CreateUserForm(FlaskForm):
     fname = StringField('First Name', validators=[DataRequired()])
     lname = StringField('Last Name', validators=[DataRequired()])
     mname = StringField('MI')
+    profile_pic = FileField('Profile Picture')
     date_of_birth = DateField('Date of Birth (YYYY/MM/DD) (In Progress)')
     submit = SubmitField('Create Account')
 
@@ -53,6 +57,7 @@ class CreateUserForm(FlaskForm):
     fname = StringField('First Name', validators=[DataRequired()])#length(min=2, max=64) Testing stuff with min and max length
     lname = StringField('Last Name', validators=[DataRequired()])
     mname = StringField('MI')
+    profile_pic = FileField('Profile Picture')
     date_of_birth = DateField('Date of Birth')
     submit = SubmitField('Create Account')
     # def validate_username(self, username):
@@ -75,6 +80,7 @@ class EditProfileForm(FlaskForm):
     mname = StringField('Middle Initial')
     user_bio = StringField('User Bio', widget=TextArea())
     lname = StringField('Last Name')
+    profile_pic = FileField('Profile Picture')
     submit = SubmitField('Update Profile')
 
    
@@ -91,7 +97,7 @@ class AddJob(FlaskForm):
     job_title = StringField('Job Title', validators=[DataRequired()])
     company = StringField('Company', validators=[DataRequired()])
     job_description = StringField('Description', validators=[DataRequired()])
-    url = StringField('URL', validators=[DataRequired()])
+    job_url = StringField('URL')
     submit = SubmitField('Submit')
 
 

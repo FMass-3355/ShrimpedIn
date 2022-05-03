@@ -7,7 +7,7 @@ from os import environ
 from app import db
 from app.models import *
 #------flask------#
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, send_file, flash
 from flask_login import login_user, logout_user, login_required, current_user
 #------WTFForms---------#
 from app.forms import *
@@ -16,6 +16,8 @@ from wtforms.validators import DataRequired
 import sys
 import requests
 from io import BytesIO
+
+from flask_wtf.file import FileField
 
 
 #API (needed for the USAjobs stuff and other APIs)
@@ -184,6 +186,7 @@ def profile():
         lname = current_user.lname
         email = current_user.email
         mname = current_user.mname
+
         dob = current_user.date_of_birth
 
         address = current_user.address
@@ -352,16 +355,19 @@ def add_job():
     if is_recruiter() or is_admin():
         form = AddJob()
         if form.validate_on_submit():
+            fk_recruiter_id =db.session.query(Recruiter).filter_by(id=1).first()
             job_title = form.job_title.data
             company = form.company.data
             description = form.job_description.data
-            url = form.url.data
-            job_posting = Job(job_title=job_title, company=company, job_description=description, url=url)
+            url = form.job_url.data
+            job_posting = Job(job_title=job_title, company=company, job_description=description, job_url=url, fk_recruiter_id=fk_recruiter_id.id)
             db.session.add(job_posting)
             db.session.commit()
             #all_jobs= db.session.query(Job.job_title).all()
             #print(all_jobs, file=sys.stderr)
+        flash('Job Posted!')
         return render_template('create_jobs.html', form=form)
+        
     return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
@@ -389,7 +395,7 @@ def search():
         for item in db.session.query(Job).filter(Job.job_title==keyword):
             job = JobInfo()
             job.title = item.job_title
-            job.URI = item.url
+            job.URI = item.job_url
             job.location = item.company
             job_results.append(job)
 
