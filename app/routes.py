@@ -196,10 +196,9 @@ def profile():
         phone_number = current_user.phone_number
         user_bio = current_user.user_bio
         # image_file = url_for('static', filename='images/' + current_user.image_file)
-        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="profile_pic").first() is not None
+        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
         if exists:
             image_file = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").with_entities(Upload.data).first()
-
         else:
             image_file = url_for('static', filename='images/' + current_user.image_file)
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
@@ -308,7 +307,9 @@ def upload():
 def upload_img():
     if request.method == 'POST':
         file = request.files['file']
-        
+        exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
+        if exists:
+            db.session.delete(exists)
         upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="profile_pic")
         db.session.add(upload)
         db.session.commit()
@@ -369,6 +370,26 @@ def add_job():
         return render_template('create_jobs.html', form=form)
         
     return render_template('invalid_credentials.html')
+
+@app.route('/apply_job/<job_id>', methods=['GET', 'POST'])
+@login_required
+def apply_job(job_id):
+    if is_student():
+        # form=ApplyJob()
+        fk_job_id = job_id
+
+        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first() is not None
+        if exists:
+            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume", fk_job_id=fk_job_id).with_entities(Upload.data).first()
+
+        #Application variable stores final information to be added to the database (association tables)
+        application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id)
+        db.session.add(application)
+        db.session.commit()
+        # print(job_id, file = sys.stdout)
+        return render_template('application.html')
+        
+    return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
 @app.route('/search', methods=['GET', 'POST'])
@@ -393,7 +414,10 @@ def search():
          # objects (job_results)
 
         for item in db.session.query(Job).filter(Job.job_title==keyword):
-            job = JobInfo()
+            # job_retrieved = 'internal'
+            job = JobInfo() #this class is located in models.py, it does not create a table and is not used (investigate)
+            job.retrieved = 'internal'
+            job.id = item.id
             job.title = item.job_title
             job.URI = item.job_url
             job.location = item.company
@@ -403,7 +427,9 @@ def search():
         
         
         for item in response_json['SearchResult']['SearchResultItems']:
+            # job_retrieved = 'external'
             job = JobInfo()
+            job.retrieved = 'external'
             job.URI = item['MatchedObjectDescriptor']['PositionURI']
             job.title = item['MatchedObjectDescriptor']['PositionTitle']
             job.location = item['MatchedObjectDescriptor']['PositionLocationDisplay']
