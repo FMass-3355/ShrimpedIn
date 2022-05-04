@@ -371,20 +371,22 @@ def add_job():
         
     return render_template('invalid_credentials.html')
 
-@app.route('/apply_job', methods=['GET', 'POST'])
+@app.route('/apply_job/<job_id>', methods=['GET', 'POST'])
 @login_required
-def apply_job():
+def apply_job(job_id):
     if is_student():
         # form=ApplyJob()
-        # fk_job_id = search.jobInfo()
+        fk_job_id = job_id
+
         exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first() is not None
         if exists:
-            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").with_entities(Upload.data).first()
+            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume", fk_job_id=fk_job_id).with_entities(Upload.data).first()
 
         #Application variable stores final information to be added to the database (association tables)
-        application = Associations_Application(fk_user_id=current_user.id)
+        application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id)
         db.session.add(application)
         db.session.commit()
+        # print(job_id, file = sys.stdout)
         return render_template('application.html')
         
     return render_template('invalid_credentials.html')
@@ -415,6 +417,7 @@ def search():
             # job_retrieved = 'internal'
             job = JobInfo() #this class is located in models.py, it does not create a table and is not used (investigate)
             job.retrieved = 'internal'
+            job.id = item.id
             job.title = item.job_title
             job.URI = item.job_url
             job.location = item.company

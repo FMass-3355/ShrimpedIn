@@ -53,8 +53,8 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)      
 
-    rec_id = relationship("Recruiter", backref="users")
-    rec_id2 = relationship("Associations_Application", backref="users")  
+    rec_id = relationship("Recruiter", cascade='all,delete', backref="users")
+    rec_id2 = relationship("Associations_Application", cascade='all,delete', backref="users")  
 
 #-----Subtype: Recruiter M:N (users:companies)------#
 class Recruiter(UserMixin, db.Model):
@@ -62,7 +62,7 @@ class Recruiter(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fk_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     fk_company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
-    fk_rec_id = relationship("Job", backref="recruiter")
+    fk_rec_id = relationship("Job", cascade='all,delete', backref="recruiter")
 #-----Subtype: Recruiter M:N (users:companies)------#
 #---------------- Users ----------------#
 
@@ -97,7 +97,7 @@ class Job(db.Model):
     Job_zip_code = db.Column(db.Integer)
 
     #Relationship
-    job_id=relationship("Associations_Application", backref='jobs')
+    job_id=relationship("Associations_Application", cascade='all,delete', backref='jobs')
 #------------------Job----------------#
 
 # class Education(db.Model):
@@ -128,6 +128,7 @@ class Associations_Application(db.Model):
    id = db.Column(db.Integer, primary_key=True)
    fk_job_id=db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=True) #MAKE FALSE AFTER TESTING
    fk_user_id=db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+#    job_id=relationship('',cascade='')
 #    A_resume=db.Column(db.LargeBinary, nullable=True)
 #    A_coverletter=db.Column(db.LargeBinary, nullable=True)
    
@@ -140,7 +141,8 @@ class Associations_Application(db.Model):
 # API Sprint 3
 #NOT PART OF DATABASE MODEL
 class JobInfo:
-    def __JobInfo__(retrieved, title, URI, location):
+    def __JobInfo__(job_id, retrieved, title, URI, location):
+        job_id = job_id
         retrieved = retrieved
         title = title
         URI = URI
