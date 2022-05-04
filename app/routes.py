@@ -196,10 +196,9 @@ def profile():
         phone_number = current_user.phone_number
         user_bio = current_user.user_bio
         # image_file = url_for('static', filename='images/' + current_user.image_file)
-        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="profile_pic").first() is not None
+        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
         if exists:
             image_file = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").with_entities(Upload.data).first()
-
         else:
             image_file = url_for('static', filename='images/' + current_user.image_file)
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
@@ -308,7 +307,9 @@ def upload():
 def upload_img():
     if request.method == 'POST':
         file = request.files['file']
-        
+        exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
+        if exists:
+            db.session.delete(exists)
         upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="profile_pic")
         db.session.add(upload)
         db.session.commit()
@@ -375,7 +376,12 @@ def add_job():
 def apply_job():
     if is_student():
         # form=ApplyJob()
-        #exists = db.session.query(Job.id).filter_by(user_id=current_user.id, doc_type="profile_pic").first() is not None
+        # fk_job_id = search.jobInfo()
+        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first() is not None
+        if exists:
+            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").with_entities(Upload.data).first()
+
+        #Application variable stores final information to be added to the database (association tables)
         application = Associations_Application(fk_user_id=current_user.id)
         db.session.add(application)
         db.session.commit()

@@ -127,9 +127,9 @@ class Associations_Application(db.Model):
    __tablename__ = 'associations_applications'
    id = db.Column(db.Integer, primary_key=True)
    fk_job_id=db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=True) #MAKE FALSE AFTER TESTING
-   fk_user_id= db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-   A_resume=db.Column(db.LargeBinary, nullable=True)
-   A_coverletter=db.Column(db.LargeBinary, nullable=True)
+   fk_user_id=db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+#    A_resume=db.Column(db.LargeBinary, nullable=True)
+#    A_coverletter=db.Column(db.LargeBinary, nullable=True)
    
 
 
