@@ -288,7 +288,7 @@ def edit_profile():
     image_file = url_for('static', filename='images/' + 'profile.png')
     return render_template('edit_profile.html', form=form, image_file=image_file)
   
-  
+''' 
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -299,8 +299,9 @@ def upload():
         db.session.add(upload)
         db.session.commit()
 
-        return f'Uploaded: {file.filename}'
+        return redirect(request.url)
     return render_template('index.html')
+'''
 
 @app.route('/upload_img', methods=['GET', 'POST'])
 @login_required
@@ -322,12 +323,16 @@ def upload_img():
 def upload_resume():
     if request.method == 'POST':
         file = request.files['file']
+        exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").first()
+        if exists:
+            db.session.delete(exists)
         
         upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
         db.session.add(upload)
         db.session.commit()
 
-        return f'Uploaded: {file.filename}'
+
+        return redirect(request.referrer)
     return render_template('index.html')
 
 #---------------------------------------------------------- Profiles --------------------------------------------------------------------------#
@@ -380,7 +385,7 @@ def apply_job(job_id):
 
         exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first() is not None
         if exists:
-            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume", fk_job_id=fk_job_id).with_entities(Upload.data).first()
+            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").with_entities(Upload.data).first()
 
         #Application variable stores final information to be added to the database (association tables)
         application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id)
