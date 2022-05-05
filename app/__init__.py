@@ -82,7 +82,7 @@ from app.models import *
 
 #Drop Database to refresh (Comment out later once statisfied)
 #db.drop_all()
-#db.create_all()
+db.create_all()
 
 
 

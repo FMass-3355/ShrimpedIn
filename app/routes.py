@@ -212,16 +212,18 @@ def recover_account():
     form = AccountRecovery()
     if form.validate_on_submit():
         username = form.username.data
-    if db.session.query(User).filter_by(username=username).first():
-        print("Account Recovered")
-        return render_template('account_recovery.html', form=form)
+        email = form.email.data
+        if (db.session.query(User).filter_by(username=username).first()) and (db.session.query(User).filter_by(email=email).first()):
+            password = db.session.query(User.password_hash).first()
+            print(password)
+    return render_template('account_recovery.html', form=form)
     
     
 #Edit
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditProfileForm()
+    form = EditProfileForm(state=current_user.state, user_bio=current_user.user_bio)
     if form.validate_on_submit():
         #---------------------------# 
         address = form.address.data
@@ -264,8 +266,6 @@ def edit_profile():
             current_user.user_bio = current_user.user_bio
         else:
             current_user.user_bio = user_bio
-
-       
 
         if state == '':
             current_user.state = current_user.state
@@ -365,7 +365,7 @@ def add_job():
             db.session.commit()
             #all_jobs= db.session.query(Job.job_title).all()
             #print(all_jobs, file=sys.stderr)
-        flash('Job Posted!')
+            flash('Job Posted!')
         return render_template('create_jobs.html', form=form)
         
     return render_template('invalid_credentials.html')
