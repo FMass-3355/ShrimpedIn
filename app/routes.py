@@ -367,8 +367,11 @@ def add_job():
             #print(all_jobs, file=sys.stderr)
         flash('Job Posted!')
         return render_template('create_jobs.html', form=form)
-        
     return render_template('invalid_credentials.html')
+
+
+
+    
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
 @app.route('/search', methods=['GET', 'POST'])
