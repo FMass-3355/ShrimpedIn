@@ -9,48 +9,44 @@
             {{ form.hidden_tag() }}
             <p style="width: fit-content; margin: auto;">
                 {{ form.fname.label(class="form-control-label") }}
-                {{ form.fname(class="form-control form-control-md")}}
+                {{ form.fname(class="form-control form-control-md", value=current_user.fname)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.lname.label(class="form-control-label") }}
-                {{ form.lname(class="form-control form-control-md")}}
+                {{ form.lname(class="form-control form-control-md", value=current_user.lname)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.mname.label(class="form-control-label") }}
-                {{ form.mname(class="form-control form-control-md")}}
+                {{ form.mname(class="form-control form-control-md", value=current_user.mname)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.address.label(class="form-control-label") }}
-                {{ form.address(class="form-control form-control-md")}}
+                {{ form.address(class="form-control form-control-md", value=current_user.address)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.city.label(class="form-control-label") }}
-                {{ form.city(class="form-control form-control-md")}}
+                {{ form.city(class="form-control form-control-md", value=current_user.city)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.state.label(class="form-control-label") }}
-                {{ form.state(class="form-control form-control-md") }}
+                {{ form.state(class="form-control form-control-md")}}
             </p>
-        
             <p style="width: fit-content; margin: auto;">
                 {{ form.zip_code.label(class="form-control-label") }}
-                {{ form.zip_code(class="form-control form-control-md")}}
+                {{ form.zip_code(class="form-control form-control-md", value=current_user.zip_code)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.phone_number.label(class="form-control-label") }}
-                {{ form.phone_number(class="form-control form-control-md")}}
+                {{ form.phone_number(class="form-control form-control-md", value=current_user.phone_number)}}
             </p>
             <p>
                 {{ form.user_bio.label }}<br>
-                {{ form.user_bio(class="form-control form-control-md", cols=100, rows=5, placeholder="Up to 512 characters. . .")}}
+                {{ form.user_bio(class="form-control form-control-md", cols=100, rows=5)}}
             </p><br>
             <p href="/profile" style="width: fit-content; margin: auto; float: right;">
                 {{ form.submit(class="form-control form-control-md btn btn-primary") }}</p>
             <button class="form-control form-control-md btn btn-secondary" href="/profile" \
             style="float: left; width: fit-content; margin: auto;">Back</button>
-
-
-
         </form>
         
     </div>

@@ -196,10 +196,9 @@ def profile():
         phone_number = current_user.phone_number
         user_bio = current_user.user_bio
         # image_file = url_for('static', filename='images/' + current_user.image_file)
-        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="profile_pic").first() is not None
+        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
         if exists:
             image_file = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").with_entities(Upload.data).first()
-
         else:
             image_file = url_for('static', filename='images/' + current_user.image_file)
     return render_template('profile.html', fname=fname, lname=lname, email=email, username=username, 
@@ -212,16 +211,18 @@ def recover_account():
     form = AccountRecovery()
     if form.validate_on_submit():
         username = form.username.data
-    if db.session.query(User).filter_by(username=username).first():
-        print("Account Recovered")
-        return render_template('account_recovery.html', form=form)
+        email = form.email.data
+        if (db.session.query(User).filter_by(username=username).first()) and (db.session.query(User).filter_by(email=email).first()):
+            password = db.session.query(User.password_hash).first()
+            print(password)
+    return render_template('account_recovery.html', form=form)
     
     
 #Edit
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditProfileForm()
+    form = EditProfileForm(state=current_user.state, user_bio=current_user.user_bio)
     if form.validate_on_submit():
         #---------------------------# 
         address = form.address.data
@@ -265,8 +266,6 @@ def edit_profile():
         else:
             current_user.user_bio = user_bio
 
-       
-
         if state == '':
             current_user.state = current_user.state
         else:
@@ -289,7 +288,7 @@ def edit_profile():
     image_file = url_for('static', filename='images/' + 'profile.png')
     return render_template('edit_profile.html', form=form, image_file=image_file)
   
-  
+''' 
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -300,15 +299,18 @@ def upload():
         db.session.add(upload)
         db.session.commit()
 
-        return f'Uploaded: {file.filename}'
+        return redirect(request.url)
     return render_template('index.html')
+'''
 
 @app.route('/upload_img', methods=['GET', 'POST'])
 @login_required
 def upload_img():
     if request.method == 'POST':
         file = request.files['file']
-        
+        exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
+        if exists:
+            db.session.delete(exists)
         upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="profile_pic")
         db.session.add(upload)
         db.session.commit()
@@ -321,12 +323,16 @@ def upload_img():
 def upload_resume():
     if request.method == 'POST':
         file = request.files['file']
+        exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").first()
+        if exists:
+            db.session.delete(exists)
         
         upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
         db.session.add(upload)
         db.session.commit()
 
-        return f'Uploaded: {file.filename}'
+
+        return redirect(request.referrer)
     return render_template('index.html')
 
 #---------------------------------------------------------- Profiles --------------------------------------------------------------------------#
@@ -365,13 +371,29 @@ def add_job():
             db.session.commit()
             #all_jobs= db.session.query(Job.job_title).all()
             #print(all_jobs, file=sys.stderr)
-        flash('Job Posted!')
+            flash('Job Posted!')
         return render_template('create_jobs.html', form=form)
     return render_template('invalid_credentials.html')
 
+@app.route('/apply_job/<job_id>', methods=['GET', 'POST'])
+@login_required
+def apply_job(job_id):
+    if is_student():
+        # form=ApplyJob()
+        fk_job_id = job_id
 
+        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first() is not None
+        if exists:
+            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").with_entities(Upload.data).first()
 
-    
+        #Application variable stores final information to be added to the database (association tables)
+        application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id)
+        db.session.add(application)
+        db.session.commit()
+        # print(job_id, file = sys.stdout)
+        return render_template('application.html')
+        
+    return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
 @app.route('/search', methods=['GET', 'POST'])
@@ -396,7 +418,10 @@ def search():
          # objects (job_results)
 
         for item in db.session.query(Job).filter(Job.job_title==keyword):
-            job = JobInfo()
+            # job_retrieved = 'internal'
+            job = JobInfo() #this class is located in models.py, it does not create a table and is not used (investigate)
+            job.retrieved = 'internal'
+            job.id = item.id
             job.title = item.job_title
             job.URI = item.job_url
             job.location = item.company
@@ -406,7 +431,9 @@ def search():
         
         
         for item in response_json['SearchResult']['SearchResultItems']:
+            # job_retrieved = 'external'
             job = JobInfo()
+            job.retrieved = 'external'
             job.URI = item['MatchedObjectDescriptor']['PositionURI']
             job.title = item['MatchedObjectDescriptor']['PositionTitle']
             job.location = item['MatchedObjectDescriptor']['PositionLocationDisplay']
