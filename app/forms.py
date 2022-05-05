@@ -103,10 +103,11 @@ class AddJob(FlaskForm):
     job_description = StringField('Description', validators=[DataRequired()])
     job_url = StringField('URL')
     submit = SubmitField('Submit')
+    
 
-
-
-
+class ApplyJob(FlaskForm):
+    
+    submit = SubmitField('Submit')
 
 
 
