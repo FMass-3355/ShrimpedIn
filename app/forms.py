@@ -1,9 +1,12 @@
 #imports
+from wsgiref.validate import validator
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
 from wtforms.widgets import TextArea
 from flask_wtf.file import FileField
+from app import *
 
 
 #----------------------New User Creation--------------------------------------------------#
@@ -87,6 +90,7 @@ class EditProfileForm(FlaskForm):
 
 class AccountRecovery(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
     submit = SubmitField('Recover Account')
 #----------------------Account settings----------------------------------------------------#
 

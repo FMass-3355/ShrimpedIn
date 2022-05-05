@@ -29,15 +29,20 @@
                             <form action="" method="post" novalidate>
                                 {{ form.hidden_tag() }}
                                 <p style="width: fit-content; margin: auto;">
-                                    {{ form.username.label }}<br>
-                                    {{ form.username(size=32) }}
+                                    {{ form.username.label(class="form-control-label") }}<br>
+                                    {{ form.username(class="form-control form-control-md") }}
+                                </p><br>
+
+                                <p style="width: fit-content; margin: auto;">
+                                    {{ form.email.label(class="form-control-label") }}<br>
+                                    {{ form.email(class="form-control form-control-md")}}
                                 </p><br>
                                         
-                                <p class="btn" style="display: flex; justify-content: center;"> {{ form.submit() }} </p>
+                                <p class="btn" style="display: flex; margin: auto; width: fit-content;"> {{ form.submit(class="form-control form-control-md") }} </p>
                                 <br><hr style="width: 50%; margin: auto;"><br>
                             </form>
 
-                            <a class="btn btn-outline-dark" href="/login" \
+                            <a class="btn" href="/login" \
                             style="display: flex; margin: auto; width: fit-content; background-color: white;">Back</a>
                         </div>
                     </div>

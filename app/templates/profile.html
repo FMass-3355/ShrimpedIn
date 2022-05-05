@@ -11,8 +11,7 @@
 				<br>
 				<h1 style="padding-bottom: 2.5%; text-align: center; ">{{ username }}</h1>
 				<br>
-				#test
-				<form action="" method="post" novalidate style="margin: auto; width: fit-content; ">
+				<form action="" method="POST" novalidate style="margin: auto; width: fit-content; ">
 				<div class="form-control">
 					<label class="header">profile pic</label>
 					<input id="image" type="file" name="profile_pic" placeholder="Upload a profile picture" required="" capture>
@@ -26,7 +25,7 @@
 							<div class="col-md-6"><a href="/edit_profile" class="btn btn-outline-dark" \
 								style="float: right;">Edit Profile</a></div>
 						</div>
-						<p>{{ user_bio }}</p><hr>
+						<p style="font-size: larger;">{{ user_bio }}</p><hr>
 
 						<div id="resume">
 							<h2>IMG TEST</h2>
