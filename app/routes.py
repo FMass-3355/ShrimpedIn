@@ -389,20 +389,24 @@ def apply_job(job_id):
     if is_student():
         # form=ApplyJob()
         fk_job_id = job_id
-
-        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first()
-        if exists:
-            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").first()
-
-        #Application variable stores final information to be added to the database (association tables)
-            application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id, A_resume=A_resume.id)
-            db.session.add(application)
-            db.session.commit()
+        job_exists = db.session.query(Associations_Application.id).filter_by(fk_user_id=current_user.id, fk_job_id=fk_job_id).first()
+        if job_exists:
+            print("ALREADY APPLIED :D", file = sys.stdout)
+            return render_template('already_applied.html') #return to something else, just this for now
         else:
-            flash('You need to upload your resume before applying for a job!')
-        # print(job_id, file = sys.stdout)
+            r_exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first()
+            if r_exists:
+                A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").first()
 
-        return render_template('application.html')
+                #Application variable stores final information to be added to the database (association tables)
+                application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id, A_resume=A_resume.id)
+                db.session.add(application)
+                db.session.commit()
+            else:
+                flash('You need to upload your resume before applying for a job!')
+                # print(job_id, file = sys.stdout)
+
+            return render_template('application.html')
      
     return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
