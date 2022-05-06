@@ -378,22 +378,17 @@ def add_job():
 @app.route('/apply_job/<job_id>', methods=['GET', 'POST'])
 @login_required
 def apply_job(job_id):
-    if is_student():
-        # form=ApplyJob()
-        fk_job_id = job_id
+    if is_student() or is_regular(): #identify if regular or student
+        #Query and get the job information for rendering in application.html
+        job=db.session.query(Job).filter_by(id=job_id).first()
+        job_title = job.job_title
+        company = job.company
+        description = job.job_description
+        #render the template
+        return render_template("application.html", job_title=job_title, company=company, description=description)
+    else:
+        return render_template("invalid_credentials.html")
 
-        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first() is not None
-        if exists:
-            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").with_entities(Upload.data).first()
-
-        #Application variable stores final information to be added to the database (association tables)
-        application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id)
-        db.session.add(application)
-        db.session.commit()
-        # print(job_id, file = sys.stdout)
-        return render_template('application.html')
-        
-    return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
 @app.route('/search', methods=['GET', 'POST'])
@@ -512,6 +507,13 @@ def is_faculty():
             return False
     else:
         print('User not authenticated.', file=sys.stderr)
+
+def is_regular():
+    if current_user:
+        if current_user.role == "regular":
+            return True
+        else:
+            return False
 #---------------------------------------------------#
 
 

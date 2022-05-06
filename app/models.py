@@ -161,6 +161,36 @@ class Upload(db.Model):
     user_id = Column(Integer, ForeignKey('users.id'))
 #-----------------Upload files---------------------------- 
 
+#-----------------Jobs stats--------------------------
+#class NationalJobs(db.Model):
+   # __tablename__ = 'nationaljobs'
+    #id = db.Column(db.Integer, primary_key=True)
+    #careers = db.Column(db.String(255))
+    #employment_rise = db.Column(db.String(64))
+    #average_mean = db.Column(db.String(64))
+    #mean_rise = db.Column(db.String(64))
+
+    #Hourly Percentile
+    #-------------------------------------------
+   # hourly_10th_perc = db.Column(db.String(64))
+   # hourly_25th_perc = db.Column(db.String(64))
+   # hourly_med_perc = db.Column(db.String(64))
+   # hourly_75th_perc = db.Column(db.String(64))
+   # hourly_90th_perc = db.Column(db.String(64)) 
+    #-------------------------------------------
+
+    #annual Percentile
+
+   # average_10th_perc = db.Column(db.String(64))
+   # average_25th_perc = db.Column(db.String(64))
+   # average_med_perc = db.Column(db.String(64))
+    #average_75th_perc = db.Column(db.String(64))
+    #average_90th_percentile = db.Column(db.String(64))
+#-----------------Jobs stats--------------------------
+
+
+
+
 #===================================================================================================
 # load_user is a function that's used by flask_login to manage the session.
 # It simply returns the object associated with the authenticated user.

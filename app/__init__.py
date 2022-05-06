@@ -85,12 +85,6 @@ from app.models import *
 #db.create_all()
 
 
-
-
-    
-
-
-#--------- Sample Users for the database ---------------#
 #-------------Test users--------------------------------#
 user = User.query.filter_by(username='admin').first()
 if user is None:

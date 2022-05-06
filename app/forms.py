@@ -46,8 +46,8 @@ class LoginForm(FlaskForm):
 
 #----------------------Account settings----------------------------------------------------#
 class ChangePasswordForm(FlaskForm):
-    old_pass = PasswordField('Old password', validators=[DataRequired()])
-    new_pass = PasswordField('New password', validators=[DataRequired()])
+    old_pass = PasswordField('Old password', validators=[DataRequired(message="please enter your old password")])
+    new_pass = PasswordField('New password', validators=[DataRequired(message="please")])
     new_pass_retype = PasswordField('Retype new password', validators=[DataRequired()])
     submit = SubmitField('Change password')
 
@@ -100,6 +100,7 @@ class AccountRecovery(FlaskForm):
 class AddJob(FlaskForm):
     job_title = StringField('Job Title', validators=[DataRequired()])
     company = StringField('Company', validators=[DataRequired()])
+    #salary =  FloatField('Salary Ammount', validators=[DateField(float), DataRequired()])
     job_description = StringField('Description', validators=[DataRequired()])
     job_url = StringField('URL')
     submit = SubmitField('Submit')
@@ -110,7 +111,14 @@ class ApplyJob(FlaskForm):
     submit = SubmitField('Submit')
 
 
+class EditJob(FlaskForm):
+    job_title = StringField('Job Title', validators=[DataRequired()])
+    job_description = StringField('Job Description', validators=[DataRequired()])
+    SubmitField('Submit')
 
+class RemoveJob(FlaskForm):
+    job_id = IntegerField('Enter Job ID number', validators=[DataRequired()])
+    submit = SubmitField('Submit')
 #----------------job forms------------------#
 
 
