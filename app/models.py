@@ -140,6 +140,7 @@ class Associations_Application(db.Model):
 
 # API Sprint 3
 #NOT PART OF DATABASE MODEL
+#add recruiter id?
 class JobInfo:
     def __JobInfo__(job_id, retrieved, title, URI, location):
         job_id = job_id

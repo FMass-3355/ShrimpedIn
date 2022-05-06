@@ -314,12 +314,14 @@ def upload_img():
         file = request.files['file']
         exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
         if exists:
-            db.session.delete(exists)
-        upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="profile_pic")
-        db.session.add(upload)
-        db.session.commit()
+            db.session.query(Upload).filter_by(user_id=current_user.id).update({'filename': file.filename, 'data': file.read()})
+            db.session.commit()
+        else:
+            upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="profile_pic")
+            db.session.add(upload)
+            db.session.commit()
 
-        return f'Uploaded: {file.filename}'
+        return redirect(request.referrer)
     return render_template('index.html')
 
 @app.route('/upload_resume', methods=['GET', 'POST'])
@@ -382,17 +384,29 @@ def add_job():
 @app.route('/apply_job/<job_id>', methods=['GET', 'POST'])
 @login_required
 def apply_job(job_id):
-    if is_student() or is_regular(): #identify if regular or student
-        #Query and get the job information for rendering in application.html
-        job=db.session.query(Job).filter_by(id=job_id).first()
-        job_title = job.job_title
-        company = job.company
-        description = job.job_description
-        #render the template
-        return render_template("application.html", job_title=job_title, company=company, description=description)
-    else:
-        return render_template("invalid_credentials.html")
+    if is_student():
+        # form=ApplyJob()
+        fk_job_id = job_id
+        job_exists = db.session.query(Associations_Application.id).filter_by(fk_user_id=current_user.id, fk_job_id=fk_job_id).first()
+        if job_exists:
+            print("ALREADY APPLIED :D", file = sys.stdout)
+            return render_template('already_applied.html') #return to something else, just this for now
+        else:
+            r_exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first()
+            if r_exists:
+                A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").first()
 
+                #Application variable stores final information to be added to the database (association tables)
+                application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id, A_resume=A_resume.id)
+                db.session.add(application)
+                db.session.commit()
+            else:
+                flash('You need to upload your resume before applying for a job!')
+                # print(job_id, file = sys.stdout)
+
+            return render_template('application.html')
+     
+    return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
 @app.route('/search', methods=['GET', 'POST'])
