@@ -129,8 +129,8 @@ class Associations_Application(db.Model):
    fk_job_id=db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=True) #MAKE FALSE AFTER TESTING
    fk_user_id=db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 #    job_id=relationship('',cascade='')
-#    A_resume=db.Column(db.LargeBinary, nullable=True)
-#    A_coverletter=db.Column(db.LargeBinary, nullable=True)
+   A_resume=db.Column(db.Integer, db.ForeignKey('upload.id'), nullable=True)
+   A_coverletter=db.Column(db.LargeBinary, nullable=True)
    
 
 
@@ -159,6 +159,8 @@ class Upload(db.Model):
     data = db.Column(db.LargeBinary)
     doc_type = db.Column(db.String(64))
     user_id = Column(Integer, ForeignKey('users.id'))
+    
+    upload_applicationlink = relationship("Associations_Application", cascade='save-update', backref="upload")
 #-----------------Upload files---------------------------- 
 
 #-----------------Jobs stats--------------------------

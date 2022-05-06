@@ -10,7 +10,7 @@ from app import *
 
 
 #----------------------New User Creation--------------------------------------------------#
-class CreateUserForm(FlaskForm):
+class AddUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
@@ -22,14 +22,6 @@ class CreateUserForm(FlaskForm):
     date_of_birth = DateField('Date of Birth (YYYY/MM/DD) (In Progress)')
     submit = SubmitField('Create Account')
 
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user:
-            raise ValueError('TAKEN')
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user:
-            raise ValueError('TAKEN')
 #----------------------New User Creation--------------------------------------------------#
 
 

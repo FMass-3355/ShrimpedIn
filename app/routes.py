@@ -155,15 +155,18 @@ def create_user():
 @app.route('/add_user', methods=['GET', 'POST'])
 def add_user():
     if is_admin():
-        form = CreateUserForm()
+        form = AddUserForm()
         if form.validate_on_submit():
-            fname = form.fname.data
-            lname = form.lname.data
             username = form.username.data
             password = form.password.data
             email = form.email.data
-            if not db.session.query(User).filter_by(email=email).first():
-                user = User(username=username, email=email, role='user', fname=fname, lname=lname)
+            fname = form.fname.data
+            lname = form.lname.data
+            mname = form.mname.data
+            role = form.role.data
+    
+            if db.session.query(User).filter_by(email=email).first() is None:
+                user = User(username=username, email=email, role=role, fname=fname, lname=lname, mname=mname)
                 user.set_password(password)
                 db.session.add(user)
                 db.session.commit()
@@ -325,13 +328,13 @@ def upload_resume():
         file = request.files['file']
         exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").first()
         if exists:
-            db.session.delete(exists)
-        
-        upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
-        db.session.add(upload)
-        db.session.commit()
-
-
+            db.session.query(Upload).filter_by(user_id=current_user.id).update({'filename': file.filename, 'data': file.read()})
+            db.session.commit()
+        else:
+            upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
+            db.session.add(upload)
+            db.session.commit()
+        flash('updated your resume')
         return redirect(request.referrer)
     return render_template('index.html')
 

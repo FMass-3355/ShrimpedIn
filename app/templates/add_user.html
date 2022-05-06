@@ -13,25 +13,47 @@
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
-            {{ form.fname.label }}<br>
-            {{ form.fname(size=32)}}
-        </p>
+            {{ form.username.label(class="form-control-label")}}<br>
+            {{ form.username(class="form-control form-control-md")}}
+        </p> 
+        
         <p>
-            {{ form.lname.label }}<br>
-            {{ form.lname(size=32)}}
+            {{ form.password.label(class="form-control-label")}}<br>
+            {{ form.password(class="form-control form-control-md")}}
         </p>
+
         <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}
+            {{ form.email.label(class="form-control-label") }}<br>
+            {{ form.email(class="form-control form-control-md") }}
         </p>
+
         <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
+            {{ form.fname.label(class="form-control-label")}}<br>
+            {{ form.fname(class="form-control form-control-md")}}
         </p>
+
         <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
+            {{ form.lname.label(class="form-control-label")}}<br>
+            {{ form.lname(class="form-control form-control-md")}}
         </p>
+
+        <p>
+            {{ form.mname.label(class="form-control-label")}}<br>
+            {{ form.mname(class="form-control form-control-md")}}
+        </p>
+        
+        <p>
+            {{ form.date_of_birth.label(class="form-control-label") }}<br>
+            {{ form.date_of_birth(class="form-control form-control-md") }}
+        
+
+        </p>
+
+        <p class="login_box">
+            {{ form.role.label(class="form-control-label")}}
+            {{ form.role(class="form-control form-control-md") }}
+        </p><br>
+        
         <p>{{ form.submit() }}</p>
     </form>
     </div>
