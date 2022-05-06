@@ -22,14 +22,14 @@ class CreateUserForm(FlaskForm):
     date_of_birth = DateField('Date of Birth (YYYY/MM/DD) (In Progress)')
     submit = SubmitField('Create Account')
 
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user:
-            raise ValueError('TAKEN')
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user:
-            raise ValueError('TAKEN')
+    # def validate_username(self, username):
+    #     user = User.query.filter_by(username=username.data).first()
+    #     if user:
+    #         raise ValueError('TAKEN')
+    # def validate_email(self, email):
+    #     user = User.query.filter_by(email=email.data).first()
+    #     if user:
+    #         raise ValueError('TAKEN')
 #----------------------New User Creation--------------------------------------------------#
 
 
@@ -127,3 +127,10 @@ class SearchForm2(FlaskForm):
     keyword = StringField('Keyword', validators=[DataRequired()])
     submit = SubmitField('Search')
 #--------------- Search Form -------------------------#
+
+
+# #------------------upload form--------------------#
+# class Upload_IMG_Form(FlaskForm):
+#     img_file = FileField('Upload Image', validators=[FileAllowed(['jpg','png'])])
+#     submit = SubmitField('Submit')
+# #------------------upload form--------------------#

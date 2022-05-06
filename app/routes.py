@@ -310,12 +310,14 @@ def upload_img():
         file = request.files['file']
         exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
         if exists:
-            db.session.delete(exists)
-        upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="profile_pic")
-        db.session.add(upload)
-        db.session.commit()
+            db.session.query(Upload).filter_by(user_id=current_user.id).update({'filename': file.filename, 'data': file.read()})
+            db.session.commit()
+        else:
+            upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="profile_pic")
+            db.session.add(upload)
+            db.session.commit()
 
-        return f'Uploaded: {file.filename}'
+        return redirect(request.referrer)
     return render_template('index.html')
 
 @app.route('/upload_resume', methods=['GET', 'POST'])
@@ -325,18 +327,13 @@ def upload_resume():
         file = request.files['file']
         exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").first()
         if exists:
-            #upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
+
             db.session.query(Upload).filter_by(user_id=current_user.id).update({'filename': file.filename, 'data': file.read()})
             db.session.commit()
-            #upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
-        #db.session.add(upload)
-            #db.session.update(upload)
-            #flash('updated your resume')
         else:
             upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
             db.session.add(upload)
             db.session.commit()
-            #flash('created a new resume')
 
         flash('updated your resume')
         return redirect(request.referrer)
