@@ -32,6 +32,16 @@
                 {{ form.job_url(size=32) }}
             </p>
             <p>{{ form.submit() }}</p>
+        
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class=flashes>
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
 
         </form>
     </body>

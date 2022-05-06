@@ -1,7 +1,32 @@
+{% block content %}
+{% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                 </ul>
+            {% endif %}
+        {% endwith %}
 <h2>RESUME</h2>
+
 <div id="pic_submit" class="center">
   <form method="POST" action="/upload_resume" enctype="multipart/form-data">
     <input type="file" name="file">
     <button>Upload</button>
-  </form>
+  
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class=flashes>
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+          </form>
 </div>
+</body>
+</html>
+
+{% endblock %} 
