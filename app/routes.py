@@ -325,13 +325,20 @@ def upload_resume():
         file = request.files['file']
         exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").first()
         if exists:
-            db.session.delete(exists)
-        
-        upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
-        db.session.add(upload)
-        db.session.commit()
+            #upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
+            db.session.query(Upload).filter_by(user_id=current_user.id).update({'filename': file.filename, 'data': file.read()})
+            db.session.commit()
+            #upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
+        #db.session.add(upload)
+            #db.session.update(upload)
+            #flash('updated your resume')
+        else:
+            upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="resume")
+            db.session.add(upload)
+            db.session.commit()
+            #flash('created a new resume')
 
-
+        flash('updated your resume')
         return redirect(request.referrer)
     return render_template('index.html')
 
@@ -383,17 +390,20 @@ def apply_job(job_id):
         # form=ApplyJob()
         fk_job_id = job_id
 
-        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first() is not None
+        exists = db.session.query(Upload.id).filter_by(user_id=current_user.id, doc_type="resume").first()
         if exists:
-            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").with_entities(Upload.data).first()
+            A_resume = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="resume").first()
 
         #Application variable stores final information to be added to the database (association tables)
-        application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id)
-        db.session.add(application)
-        db.session.commit()
+            application = Associations_Application(fk_user_id=current_user.id, fk_job_id=fk_job_id, A_resume=A_resume.id)
+            db.session.add(application)
+            db.session.commit()
+        else:
+            flash('You need to upload your resume before applying for a job!')
         # print(job_id, file = sys.stdout)
+
         return render_template('application.html')
-        
+     
     return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
