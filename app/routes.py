@@ -164,9 +164,10 @@ def add_user():
             lname = form.lname.data
             mname = form.mname.data
             role = form.role.data
+            date = form.date.data
     
             if db.session.query(User).filter_by(email=email).first() is None:
-                user = User(username=username, email=email, role=role, fname=fname, lname=lname, mname=mname)
+                user = User(username=username, email=email, role=role, fname=fname, lname=lname, mname=mname, date=date)
                 user.set_password(password)
                 db.session.add(user)
                 db.session.commit()
