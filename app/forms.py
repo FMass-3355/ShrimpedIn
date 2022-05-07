@@ -99,10 +99,16 @@ class AccountRecovery(FlaskForm):
 #----------------job forms------------------#
 class AddJob(FlaskForm):
     job_title = StringField('Job Title', validators=[DataRequired()])
-    company = StringField('Company', validators=[DataRequired()])
-    #salary =  FloatField('Salary Ammount', validators=[DateField(float), DataRequired()])
+    salary = DecimalField('Salary Ammount', places=2)
     job_description = StringField('Description', validators=[DataRequired()])
-    job_url = StringField('URL')
+    job_address = StringField('Job Location Address')
+    job_city = StringField('Job Location City')
+    job_state = SelectField('State', choices=['', 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 
+                                        'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS',
+                                         'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 
+                                         'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 
+                                         'WI', 'WY'])
+    job_zipcode = StringField('Job Location Zipcode')
     submit = SubmitField('Submit')
     
 

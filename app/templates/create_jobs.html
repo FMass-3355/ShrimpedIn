@@ -16,23 +16,44 @@
         <h2>Input Job Info</h2>
         <form action="" method="post" novalidate>
             {{ form.hidden_tag() }}
-            <p>
+            <p style="width: fit-content; margin: auto;">
                 {{ form.job_title.label }}<br>
-                {{ form.job_title(size=32) }}
+                {{ form.job_title(size=32, max=64) }}
             </p>
-            <p>
-                {{ form.company.label }}<br>
-                {{ form.company(size=32) }}
-            </p>
-            <p>
+           
+            
+            <p style="width: fit-content; margin: auto;">
                 {{ form.job_description.label }}<br>
-                {{ form.job_description(size=32) }}
+                {{ form.job_description(size=32, max=1512) }}
             </p>
-            <p>
-                {{ form.job_url.label }}<br>
-                {{ form.job_url(size=32) }}
+
+            <p style="width: fit-content; margin: auto;">
+                {{ form.salary.label }}<br>
+                {{ form.salary(size=32, max=128) }}
             </p>
-            <p>{{ form.submit() }}</p>
+            
+            <p style="width: fit-content; margin: auto;">
+                {{ form.job_address.label }}<br>
+                {{ form.job_address(size=32, max=128) }}
+            </p>
+            
+            <p style="width: fit-content; margin: auto;">
+                {{ form.job_city.label }}<br>
+                {{ form.job_city(size=32, max=64) }}
+            </p> 
+
+            <p style="width: fit-content; margin: auto;">
+                {{ form.job_zipcode.label }}<br>
+                {{ form.job_zipcode(size=32, max=5) }}
+            </p>
+
+            <p style="width: fit-content; margin: auto;">
+                {{ form.job_state.label(class="form-control-label") }}
+                {{ form.job_state(class="form-control form-control-md")}}
+                </p>
+            
+            <p href="#" style="width: fit-content; margin: auto; float: right;">
+                {{ form.submit(class="form-control form-control-md btn btn-primary") }}</p>
         
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}

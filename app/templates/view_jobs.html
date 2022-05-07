@@ -7,26 +7,47 @@
 
   </head>
   <body style="background-color: transparent;">
+
+    <h1>SHRIMPEDIN jobs available</h1>
+    <table id="data" class="table table-striped">
+      <thead> <!--The head of the Table-->
+        <th>Job Title</th>
+        <th>Company</th>
+        <th>Location</th>
+        <th>Est. Yearly Salary</th>
+        <th>Apply</th>
+      </thead>
+      <tbody><!-- The table body-->
+        {% for jobs in job_results_i%}
+          <tr>
+            <td>{{jobs.title}}</td>
+            <td>{{jobs.company}}</td>
+            <td>{{jobs.location_address}}, {{jobs.location_city}}, {{jobs.location_state}}, {{jobs.location_zipcode}}</td>
+            <td>{{jobs.Salary}}</td>
+            <td><a href="/apply_job/{{jobs.job_id}}">Apply Now</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+
+    <br>
+    <h1>FROM USA JOBS</h1>
     <table id="data" class="table table-striped">
       <thead>
         <tr>
           <th>Job title</th>
           <th>Location</th>
-          <th>Full description</th>
+          <th>Link</th>
         </tr>
       </thead>
       <tbody>
-        {% for job in job_results %}
-        
+        {% for job in job_results_e %}
         <tr>
           <td>{{job.title}}</td>
           <td>{{job.location}}</td>
-          {% if job.retrieved == 'internal' %}
-          <td><a href="/apply_job/{{job.id}}">Apply</a></td>
-          {% elif job.retrieved == 'external' %}
           <!-- <td><a href={{job.URI}}>click here</a></td> -->
           <td><a href={{job.URI}} target="_blank">click here</a></td>
-          {% endif %}
         </tr>
         {% endfor %}
       </tbody>

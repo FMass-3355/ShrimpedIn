@@ -1,5 +1,6 @@
 #Imports
 #-------From SQLAlchemy---------#
+from email.policy import default
 from app import db, login
 from sqlalchemy import*
 from sqlalchemy.orm import *
@@ -74,7 +75,7 @@ class Company(db.Model):
     company_name = db.Column(db.String(64), unique=True, nullable=False) #see how long should be for title and desc.
     company_description = db.Column(db.String(1512), default='No company description')
     address = db.Column(db.String(64))
-    zip_code = db.Column(db.Integer) 
+    zip_code = db.Column(db.String(5)) 
     city = db.Column(db.String(64))
     state = db.Column(db.String(64))
     #relates to the recruiter M:N with users
@@ -91,10 +92,12 @@ class Job(db.Model):
     job_title = db.Column(db.String(64)) #see how long should be for title and desc.
     job_description = db.Column(db.String(1512))
     company = db.Column(db.String(64))
+    job_salary = db.Column(db.String(32), default="Negotiable")
     job_url = db.Column(db.String(256))
-    job_address = db.Column(db.String(128))
-    job_city = db.Column(db.String(64))
-    Job_zip_code = db.Column(db.Integer)
+    job_address = db.Column(db.String(128), default="TBD",nullable=True)
+    job_city = db.Column(db.String(64), default="TBD", nullable=True)
+    job_state = db.Column(db.String(2), default="TBD", nullable=True)
+    job_zipcode = db.Column(db.String(5), default="TBD",nullable=True)
 
     #Relationship
     job_id=relationship("Associations_Application", cascade='all,delete', backref='jobs')
@@ -142,14 +145,22 @@ class Associations_Application(db.Model):
 #NOT PART OF DATABASE MODEL
 #add recruiter id?
 class JobInfo:
-    def __JobInfo__(job_id, retrieved, title, URI, location):
+    def __JobInfo__(job_id, title, URI, location):
         job_id = job_id
-        retrieved = retrieved
         title = title
         URI = URI
         location = location
 
-
+class JobInfo2:
+    def __JobInfo2__(job_id, title, company, Salary, location_address,location_city, location_state, location_zipcode):
+        job_id = job_id
+        title = title
+        company=company
+        Salary = Salary
+        location_address = location_address
+        location_city = location_city
+        location_zipcode = location_zipcode
+        location_state = location_state
 
 
 #-----------------Upload files----------------------------
