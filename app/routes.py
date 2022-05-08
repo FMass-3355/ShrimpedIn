@@ -496,7 +496,7 @@ def view_applicants():
 def view_applicant(job_id):
     query_applicants = []
     applicants = db.session.query(Associations_Application.fk_user_id).filter_by(fk_job_id=job_id)
-    for itemA, itemB in db.session.query(User, Associations_Application).filter(User.id==Associations_Application.fk_user_id).all():
+    for itemA, itemB in db.session.query(User, Associations_Application).filter(User.id==Associations_Application.fk_user_id).filter(Associations_Application.fk_job_id== job_id).all():
         applicants=Applicants()
         applicants.user_id = itemA.id
         applicants.username = itemA.username

@@ -204,3 +204,9 @@ if (user is not None and company is not None) and Recruiter.query.filter_by(fk_u
     db.session.add(recruiter_Add)
     db.session.commit()
 
+user=User.query.filter_by(username='recruiter', role='recruiter').first()
+company = Company.query.filter_by(company_name='Rockeye Technologies').first()
+if (user is not None and company is not None) and Recruiter.query.filter_by(fk_user_id=user.id, fk_company_id=company.id).first() is None:
+    recruiter_Add=Recruiter(fk_user_id=user.id, fk_company_id=company.id)
+    db.session.add(recruiter_Add)
+    db.session.commit()
