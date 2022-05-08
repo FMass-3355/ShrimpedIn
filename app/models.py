@@ -162,12 +162,20 @@ class JobInfo2:
         location_city = location_city
         location_zipcode = location_zipcode
         location_state = location_state
+    
 
 class Applicants:
     def __applicants__(user_id, username, email, status):
         user_id = user_id
         username = username
         email = email
+        status = status
+
+class Applicants2:
+    def __applicants2__(job_id, title, company ,status):
+        job_id = job_id
+        title = title
+        company = company
         status = status
 
 
