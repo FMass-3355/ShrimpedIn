@@ -121,6 +121,7 @@ class ApplyJob(FlaskForm):
 class EditJob(FlaskForm):
     job_title = StringField('Job Title', validators=[DataRequired()])
     job_description = StringField('Job Description', validators=[DataRequired()])
+    job_url = StringField('Job URL', validators=[DataRequired()])
     job_salary = DecimalField('Salary Ammount Per Year', places=2)
     job_address = StringField('Job Location Address')
     job_city = StringField('Job Location City')
