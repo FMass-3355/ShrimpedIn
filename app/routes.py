@@ -132,19 +132,32 @@ def create_user():
         fname = form.fname.data
         lname = form.lname.data
         mname = form.mname.data
+        company_name = form.company_name.data
         date_of_birth = form.date_of_birth.data
         
         email_exists = db.session.query(User).filter_by(email=email).first()
         user_exists = db.session.query(User).filter_by(username=username).first()   
         if (email_exists is None) and (user_exists is None):
-            user = User(username=username, email=email, role=role, fname=fname, lname=lname, mname=mname, date_of_birth=date_of_birth)
+            user = User(username=username, email=email, role=role, fname=fname, lname=lname, mname=mname,date_of_birth=date_of_birth)
             user.set_password(password)
             db.session.add(user)
+            if role == 'recruiter': 
+                company = Company(company_name=company_name)
+                db.session.add(company)
+                if (user is not None and company is not None) and Recruiter.query.filter_by(fk_user_id=user.id, fk_company_id=company.id).first() is None:
+                    recruiter_Add=Recruiter(fk_user_id=user.id, fk_company_id=company.id)
+                    db.session.add(recruiter_Add)
+                    db.session.commit()
+            
+            
             db.session.commit()
+            
             return redirect(url_for('login'))
+    
         else:
             # print("user already exists", file=sys.stderr)
             flash("user already exists")
+        
         
     all_usernames= db.session.query(User.username).all()
     print(all_usernames, file=sys.stderr)
@@ -421,9 +434,72 @@ def add_job():
         return render_template('create_jobs.html', form=form)
     return render_template('invalid_credentials.html')
 
-# @app.route('/edit_job', method=['GET', 'POST'])
-# def edit_job_view():
-#     if is_recruiter or is_admin:
+
+@app.route('/edit_jobs', methods=['GET', 'POST'])
+@login_required
+def edit_jobs():
+    form = EditJob()
+    if form.validate_on_submit():
+        #---------------------------# 
+        job_title = form.job_title.data
+        job_description = form.job_description.data
+        job_salary = form.job_salary.data
+        job_url = form.job_url.data
+        #---------------------------# 
+        job_address = form.job_address.data
+        job_city = form.job_city.data
+        job_state = form.job_state.data
+        job_zipcode = form.job_zipcode.data
+        
+        #---------------------------# 
+        if job_title == '':
+            jobs.job_title = jobs.job_title
+        else:
+            jobs.job_title = job_title
+            
+        if job_description == '':
+            jobs.job_description = jobs.job_description
+        else:
+            jobs.job_description = job_description
+
+        if job_salary == '':
+            jobs.job_salary = jobs.job_salary
+        else:
+            jobs.job_salary = job_salary
+
+        if  job_url == '':
+            jobs.job_url = jobs.job_url
+        else:
+            jobs.job_url = job_url
+
+        if job_address == '':
+            jobs.job_address = jobs.job_address
+        else:
+            jobs.job_address = job_address
+
+        if job_city == '':
+            jobs.job_city = jobs.job_city
+        else:
+            jobs.job_city = job_city
+
+        if job_state == '':
+            jobs.job_state = jobs.job_state
+        else:
+            jobs.job_state = job_state
+
+        if job_zipcode == '':
+            jobs.job_zipcode = jobs.job_zipcode
+        else:
+            jobs.job_zipcode = job_zipcode
+
+        db.session.add(jobs)
+        db.session.commit()
+
+        return redirect(url_for('view_posted_jobs'))
+
+    return render_template('edit_jobs.html', form=form)
+
+
 
 
 
