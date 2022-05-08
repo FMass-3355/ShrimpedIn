@@ -2,7 +2,7 @@
 
 {% block content %}
     
-    {% for nessage in get_flashed_messages() %}
+    {% for message in get_flashed_messages() %}
     <div class="alert alert-success alert-dismissible show" role="alert">
         {{ message }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
