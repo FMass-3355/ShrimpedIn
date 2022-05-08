@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+    <table>
+        <thead>
+            <th>Job Id</th>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Status</th>
+        </thead>
+        <tbody>
+            {% for item in applied %}
+                <tr>
+                    <td>{{item.job_id}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.company}}</td>
+            
+                    {% if item.status == 'Rejected' %}
+                    <td>Rejected</td>
+                    {% elif item.status == 'Accepted'%}
+                    <td>Accepted</td>
+                    {% else %}
+                    <td>Pending</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

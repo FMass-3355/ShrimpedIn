@@ -27,10 +27,11 @@
         <li id="job_posting" class="nav-item">
           <a class="nav-link" href="/jobs" style="color: #f0ebf4;">Job Posting</a>
         </li>
-        
-        <li id="Messages" class="nav-item">
-          <a class="nav-link" href="/chat" style="color: #f0ebf4;">Messages</a>
+        {% if current_user.role == 'student' %}
+        <li id="Jobs Applied" class="nav-item">
+          <a class="nav-link" href="/view_applied_jobs" style="color: #f0ebf4;">Jobs Applied</a>
         </li>
+        {% endif %}
 
         {% if current_user.role == 'admin' %}
           <li id="create_user" class="nav-item">

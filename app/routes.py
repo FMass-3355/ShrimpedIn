@@ -352,6 +352,19 @@ def upload_resume():
         return redirect(request.referrer)
     return render_template('index.html')
 
+@login_required
+@app.route('/view_applied_jobs/', methods=['GET', 'POST'])
+def view_applied_jobs():
+    applied = []
+    for itemA, itemB in db.session.query(Associations_Application, Job).filter_by(fk_user_id=current_user.id).all():
+        applicant2 = Applicants2()
+        applicant2.job_id = itemB.id
+        applicant2.title = itemB.job_title
+        applicant2.company = itemB.company
+        applicant2.status = itemA.status
+        applied.append(applicant2)  
+    return render_template('view_applied_jobs.html', applied=applied)
+        
 #---------------------------------------------------------- Profiles --------------------------------------------------------------------------#
 
 
@@ -506,7 +519,7 @@ def view_applicants():
 def view_applicant(job_id):
     query_applicants = []
     applicants = db.session.query(Associations_Application.fk_user_id).filter_by(fk_job_id=job_id)
-    for itemA, itemB in db.session.query(User, Associations_Application).filter(User.id==Associations_Application.fk_user_id).all():
+    for itemA, itemB in db.session.query(User, Associations_Application).filter(User.id==Associations_Application.fk_user_id).filter(Associations_Application.fk_job_id== job_id).all():
         applicants=Applicants()
         applicants.user_id = itemA.id
         applicants.username = itemA.username
