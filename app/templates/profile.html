@@ -12,10 +12,10 @@
 				<h1 style="padding-bottom: 2.5%; text-align: center; ">{{ username }}</h1>
 				<br>
 				<form action="" method="POST" novalidate style="margin: auto; width: fit-content; ">
-				<div class="form-control">
+				<!-- <div class="form-control">
 					<label class="header">profile pic</label>
 					<input id="image" type="file" name="profile_pic" placeholder="Upload a profile picture" required="" capture>
-				</div>
+				</div> -->
 				</form>
 		
 				<div id="body_section" style="background-color:#fde9f2; border: 1px solid rgb(52, 11, 141); padding: 1%;">
@@ -27,14 +27,14 @@
 						</div>
 						<p style="font-size: larger;">{{ user_bio }}</p><hr>
 
-						<div id="resume">
+						<!-- <div id="resume">
 							<h2>IMG TEST</h2>
 							<div id="pic_submit" class="center">
 								<form method="POST" action="/upload_img" enctype="multipart/form-data">
 									<input type="file" name="file">
 									<button>Upload</button>
 								</form>
-						</div>
+						</div> -->
 
 						<div id="resume">
 							<h2>Resume</h2>
@@ -43,8 +43,11 @@
 									<input type="file" name="file">
 									<button>Upload</button>
 								</form>
+								<button><a href="/download/{{ current_user.id }}" target="_blank">Download</a></button>
 							</div>
 						</div><hr>
+						
+						
 
 						<!-- <div id="download">
 							<h2>TEST DOWNLOAD</h2>
