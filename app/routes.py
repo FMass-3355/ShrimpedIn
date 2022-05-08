@@ -132,16 +132,20 @@ def create_user():
         fname = form.fname.data
         lname = form.lname.data
         mname = form.mname.data
-        dob = form.date_of_birth.data
+        date_of_birth = form.date_of_birth.data
         
-        if not db.session.query(User).filter_by(email=email).first():
-            user = User(username=username, email=email, role=role, fname=fname,
-                        lname=lname, mname=mname, date_of_birth=dob)
-            print(user, file=sys.stderr)
+        email_exists = db.session.query(User).filter_by(email=email).first()
+        user_exists = db.session.query(User).filter_by(username=username).first()   
+        if (email_exists is None) and (user_exists is None):
+            user = User(username=username, email=email, role=role, fname=fname, lname=lname, mname=mname, date_of_birth=date_of_birth)
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
-        return redirect(url_for('login'))
+            return redirect(url_for('login'))
+        else:
+            # print("user already exists", file=sys.stderr)
+            flash("user already exists")
+        
     all_usernames= db.session.query(User.username).all()
     print(all_usernames, file=sys.stderr)
     return render_template('create_user.html', form=form)
@@ -165,13 +169,19 @@ def add_user():
             lname = form.lname.data
             mname = form.mname.data
             role = form.role.data
-            date = form.date.data
-    
-            if db.session.query(User).filter_by(email=email).first() is None:
-                user = User(username=username, email=email, role=role, fname=fname, lname=lname, mname=mname, date=date)
+            date_of_birth = form.date_of_birth.data
+            
+            email_exists = db.session.query(User).filter_by(email=email).first()
+            user_exists = db.session.query(User).filter_by(username=username).first()   
+            if (email_exists is None) and (user_exists is None):
+                user = User(username=username, email=email, role=role, fname=fname, lname=lname, mname=mname, date_of_birth=date_of_birth)
                 user.set_password(password)
                 db.session.add(user)
                 db.session.commit()
+            else:
+                # print("user already exists", file=sys.stderr)
+                flash("user already exists")
+            
         all_usernames= db.session.query(User.username).all()
         print(all_usernames, file=sys.stderr)
         return render_template('add_user.html', form=form)
@@ -308,22 +318,22 @@ def upload():
     return render_template('index.html')
 '''
 
-@app.route('/upload_img', methods=['GET', 'POST'])
-@login_required
-def upload_img():
-    if request.method == 'POST':
-        file = request.files['file']
-        exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
-        if exists:
-            db.session.query(Upload).filter_by(user_id=current_user.id).update({'filename': file.filename, 'data': file.read()})
-            db.session.commit()
-        else:
-            upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="profile_pic")
-            db.session.add(upload)
-            db.session.commit()
+# @app.route('/upload_img', methods=['GET', 'POST'])
+# @login_required
+# def upload_img():
+#     if request.method == 'POST':
+#         file = request.files['file']
+#         exists = db.session.query(Upload).filter_by(user_id=current_user.id, doc_type="profile_pic").first()
+#         if exists:
+#             db.session.query(Upload).filter_by(user_id=current_user.id).update({'filename': file.filename, 'data': file.read()})
+#             db.session.commit()
+#         else:
+#             upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id, doc_type="profile_pic")
+#             db.session.add(upload)
+#             db.session.commit()
 
-        return redirect(request.referrer)
-    return render_template('index.html')
+#         return redirect(request.referrer)
+#     return render_template('index.html')
 
 @app.route('/upload_resume', methods=['GET', 'POST'])
 @login_required
@@ -366,7 +376,7 @@ def view_applied_jobs():
 @login_required
 @app.route('/download/<upload_id>')
 def download(upload_id):
-    upload = Upload.query.filter_by(id=upload_id).first()
+    upload = Upload.query.filter_by(user_id=upload_id).first()
     return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
 
 @login_required
