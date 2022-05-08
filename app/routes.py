@@ -1,4 +1,5 @@
 #Imports
+from operator import methodcaller
 from app import app
 #-------environment-------#
 from dotenv import load_dotenv
@@ -345,9 +346,16 @@ def upload_resume():
 
 
 #-------------- Uploading Documents -------------------------#
+@login_required
 @app.route('/download/<upload_id>')
 def download(upload_id):
     upload = Upload.query.filter_by(id=upload_id).first()
+    return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
+
+@login_required
+@app.route('/download_by_id/<upload_id>')
+def download_by_id(upload_id):
+    upload=Upload.query.filter_by(user_id=upload_id).first()
     return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
 #-------------- Uploading Documents -------------------------#
         
@@ -358,21 +366,26 @@ def jobs():
     if current_user.is_authenticated:
         title = db.session.query(Job).filter
     return render_template('jobs.html', job_title=title)
-  
-  
-  
+   
 @app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
     if is_recruiter() or is_admin():
+        #Get information form the form
         form = AddJob()
+        #information about the recruiter
+        Rec=Recruiter.query.filter_by(fk_user_id=current_user.id).first()
+        Comp = Company.query.filter_by(id=Rec.fk_company_id).first()
+
         if form.validate_on_submit():
-            fk_recruiter_id =db.session.query(Recruiter).filter_by(id=1).first()
             job_title = form.job_title.data
-            company = form.company.data
             description = form.job_description.data
-            url = form.job_url.data
-            job_posting = Job(job_title=job_title, company=company, job_description=description, job_url=url, fk_recruiter_id=fk_recruiter_id.id)
+            salary = form.salary.data
+            job_address = form.job_address.data
+            job_city = form.job_city.data
+            job_state = form.job_state.data
+            job_zipcode = form.job_zipcode.data
+            job_posting = Job(job_title=job_title,fk_recruiter_id=Rec.id, company=Comp.company_name, job_description=description, job_salary=salary, job_address=job_address, job_city=job_city, job_state=job_state, job_zipcode=job_zipcode)
             db.session.add(job_posting)
             db.session.commit()
             #all_jobs= db.session.query(Job.job_title).all()
@@ -380,6 +393,12 @@ def add_job():
             flash('Job Posted!')
         return render_template('create_jobs.html', form=form)
     return render_template('invalid_credentials.html')
+
+# @app.route('/edit_job', method=['GET', 'POST'])
+# def edit_job_view():
+#     if is_recruiter or is_admin:
+
+
 
 @app.route('/apply_job/<job_id>', methods=['GET', 'POST'])
 @login_required
@@ -405,7 +424,6 @@ def apply_job(job_id):
                 # print(job_id, file = sys.stdout)
 
             return render_template('application.html')
-     
     return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
@@ -416,7 +434,8 @@ def search():
                 'Authorization-Key': API_KEY}
     form = SearchForm()
     if form.validate_on_submit():
-        job_results = []
+        job_results_e= [] #external jobs
+        job_results_i=[] #internal jobs
         city = form.city.data + '%20' + form.state.data
         keyword = form.keyword.data
         full_URL = f'{API_URL}?LocationName={city}&Keyword={keyword}&ResultsPerPage=50'
@@ -432,31 +451,76 @@ def search():
 
         for item in db.session.query(Job).filter(Job.job_title==keyword):
             # job_retrieved = 'internal'
-            job = JobInfo() #this class is located in models.py, it does not create a table and is not used (investigate)
-            job.retrieved = 'internal'
-            job.id = item.id
+            job = JobInfo2() #this class is located in models.py, it does not create a table and is not used (investigate)
+            job.job_id = item.id
             job.title = item.job_title
-            job.URI = item.job_url
-            job.location = item.company
-            job_results.append(job)
+            job.location_address = item.job_address
+            job.location_city = item.job_city
+            job.location_zipcode = item.job_zipcode
+            job.location_state = item.job_state
+            job.Salary = item.job_salary
+            job.company = item.company
+            job_results_i.append(job)
 
         response_json = response.json()
         
         
         for item in response_json['SearchResult']['SearchResultItems']:
-            # job_retrieved = 'external'
             job = JobInfo()
-            job.retrieved = 'external'
             job.URI = item['MatchedObjectDescriptor']['PositionURI']
             job.title = item['MatchedObjectDescriptor']['PositionTitle']
             job.location = item['MatchedObjectDescriptor']['PositionLocationDisplay']
-            job_results.append(job)
+            job_results_e.append(job)
 
          # display search results as an HTML table
-        return render_template('view_jobs.html', job_results=job_results)
+        return render_template('view_jobs.html', job_results_e=job_results_e, job_results_i=job_results_i)
     else:
         return render_template('search.html', form=form)
 #------------------------ API SECTION -------------------------------------------------------------#
+
+
+#------------------- For Recrutiers and Administrators ----------------------------------------------#
+@app.route('/view_applicants', methods=['GET', 'POST'])
+def view_applicants():
+    query_jobs = []
+    Rec_id = db.session.query(Recruiter.id).filter_by(fk_user_id=current_user.id)
+    for item in db.session.query(Job).filter(Job.fk_recruiter_id==Rec_id):
+        job = JobInfo2()
+        job.job_id = item.id
+        job.title = item.job_title
+        query_jobs.append(job)
+    return render_template('view_posted_jobs.html', query_jobs=query_jobs)
+
+
+@app.route('/view_applicants/<job_id>', methods=['GET', 'POST'])
+def view_applicant(job_id):
+    query_applicants = []
+    applicants = db.session.query(Associations_Application.fk_user_id).filter_by(fk_job_id=job_id)
+    for itemA, itemB in db.session.query(User, Associations_Application).filter(User.id==Associations_Application.fk_user_id).all():
+        applicants=Applicants()
+        applicants.user_id = itemA.id
+        applicants.username = itemA.username
+        applicants.email = itemA.email
+        applicants.status = itemB.status
+        query_applicants.append(applicants)
+    return render_template('view_posted_applicants.html', query_applicants=query_applicants, job_id=job_id)
+
+
+@app.route('/accepted/<job_id>/<userid>', methods=['GET','POST'])
+def accept(job_id, userid):
+    db.session.query(Associations_Application).filter_by(fk_job_id=job_id, fk_user_id=userid).update({'status':'Accepted'})
+    db.session.commit()
+    return redirect(request.referrer)
+
+@app.route('/rejected/<job_id>/<userid>', methods=['GET','POST'])
+def rejected(job_id, userid):
+    db.session.query(Associations_Application).filter_by(fk_job_id=job_id, fk_user_id=userid).update({'status':'Rejected'})
+    db.session.commit()
+    return redirect(request.referrer)
+
+#------------------- For Recrutiers and Administrators ----------------------------------------------#
+
+
 #-------------------------------------------------------------Jobs---------------------------------------------------------------#
                            
                          

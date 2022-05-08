@@ -81,8 +81,8 @@ from app.models import *
 
 
 #Drop Database to refresh (Comment out later once statisfied)
-# db.drop_all()
-# db.create_all()
+#db.drop_all()
+#db.create_all()
 
 
 #-------------Test users--------------------------------#
@@ -166,25 +166,36 @@ if user is None:
 
 
 #---------------------Companies--------------------------#
+company = Company.query.filter_by(company_name='Administrator').first()
+if company is None:
+    company = Company(company_name='Administrator', address='Admin', zip_code='11111', city='TBA', state='TBA')
+    db.session.add(company)
+    db.session.commit()
+
 company = Company.query.filter_by(company_name='Rockeye Technologies').first()
 if company is None:
-    company = Company(company_name='Rockeye Technologies', address='513 Iron industrial road', zip_code='06142', city='Metropolis', state='New York')
+    company = Company(company_name='Rockeye Technologies', address='513 Iron industrial road', zip_code='06142', city='Metropolis', state='NY')
     db.session.add(company)
     db.session.commit()
 
 company = Company.query.filter_by(company_name='Red Shift Bio-Labs').first()
 if company is None:
-    company = Company(company_name='Red Shift Bio-Labs', address='54 Alison Bacterium', zip_code='07321', city='Gotham', state='New York')
+    company = Company(company_name='Red Shift Bio-Labs', address='54 Alison Bacterium', zip_code='07321', city='Gotham', state='NY')
     db.session.add(company)
     db.session.commit()
 
 company = Company.query.filter_by(company_name='Genuidine Business Corp.').first()
 if company is None:
-    company = Company(company_name='Genuidine Business Corp.', address='370 Eager Street', zip_code='11321', city='New York', state='New York')
+    company = Company(company_name='Genuidine Business Corp.', address='370 Eager Street', zip_code='11321', city='New York', state='NY')
     db.session.add(company)
     db.session.commit()
 #---------------------Companies--------------------------#
-
+user=User.query.filter_by(username='admin', role='admin').first()
+company = Company.query.filter_by(company_name='Administrator').first()
+if (user is not None and company is not None) and Recruiter.query.filter_by(fk_user_id=user.id, fk_company_id=company.id).first() is None:
+    recruiter_Add=Recruiter(fk_user_id=user.id, fk_company_id=company.id)
+    db.session.add(recruiter_Add)
+    db.session.commit()
 
 user=User.query.filter_by(username='ArtMar23', role='recruiter').first()
 company = Company.query.filter_by(company_name='Rockeye Technologies').first()
