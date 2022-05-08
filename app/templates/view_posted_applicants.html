@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <table>
+        <thead>
+            <th>User ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Download Resume</th>
+            <th>Options/Status</th>
+        </thead>
+        <tbody>
+            {% for item in query_applicants%}
+                <tr>
+                    <td>{{item.user_id}}</td>
+                    <td>{{item.username}}</td>
+                    <td>{{item.email}}</td>
+                    <td><a href="/download_by_id/{{item.user_id}}" target="_blank">Download Resume</a></td>
+                    {% if item.status == 'Rejected' %}
+                    <td>Rejected</td>
+                    {% elif item.status == 'Accepted'%}
+                    <td>Accepted</td>
+                    {% else %}
+                    <td><a href="/accepted/{{job_id}}/{{item.user_id}}">Accept</a> <a href="/rejected/{{job_id}}/{{item.user_id}}">Reject</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,4 +1,5 @@
 #Imports
+from operator import methodcaller
 from app import app
 #-------environment-------#
 from dotenv import load_dotenv
@@ -345,9 +346,16 @@ def upload_resume():
 
 
 #-------------- Uploading Documents -------------------------#
+@login_required
 @app.route('/download/<upload_id>')
 def download(upload_id):
     upload = Upload.query.filter_by(id=upload_id).first()
+    return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
+
+@login_required
+@app.route('/download_by_id/<upload_id>')
+def download_by_id(upload_id):
+    upload=Upload.query.filter_by(user_id=upload_id).first()
     return send_file(BytesIO(upload.data), attachment_filename=upload.filename, as_attachment=True)
 #-------------- Uploading Documents -------------------------#
         
@@ -358,9 +366,7 @@ def jobs():
     if current_user.is_authenticated:
         title = db.session.query(Job).filter
     return render_template('jobs.html', job_title=title)
-  
-  
-  
+   
 @app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
@@ -388,6 +394,12 @@ def add_job():
         return render_template('create_jobs.html', form=form)
     return render_template('invalid_credentials.html')
 
+# @app.route('/edit_job', method=['GET', 'POST'])
+# def edit_job_view():
+#     if is_recruiter or is_admin:
+
+
+
 @app.route('/apply_job/<job_id>', methods=['GET', 'POST'])
 @login_required
 def apply_job(job_id):
@@ -412,7 +424,6 @@ def apply_job(job_id):
                 # print(job_id, file = sys.stdout)
 
             return render_template('application.html')
-     
     return render_template('invalid_credentials.html')
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
@@ -466,6 +477,50 @@ def search():
     else:
         return render_template('search.html', form=form)
 #------------------------ API SECTION -------------------------------------------------------------#
+
+
+#------------------- For Recrutiers and Administrators ----------------------------------------------#
+@app.route('/view_applicants', methods=['GET', 'POST'])
+def view_applicants():
+    query_jobs = []
+    Rec_id = db.session.query(Recruiter.id).filter_by(fk_user_id=current_user.id)
+    for item in db.session.query(Job).filter(Job.fk_recruiter_id==Rec_id):
+        job = JobInfo2()
+        job.job_id = item.id
+        job.title = item.job_title
+        query_jobs.append(job)
+    return render_template('view_posted_jobs.html', query_jobs=query_jobs)
+
+
+@app.route('/view_applicants/<job_id>', methods=['GET', 'POST'])
+def view_applicant(job_id):
+    query_applicants = []
+    applicants = db.session.query(Associations_Application.fk_user_id).filter_by(fk_job_id=job_id)
+    for itemA, itemB in db.session.query(User, Associations_Application).filter(User.id==Associations_Application.fk_user_id).all():
+        applicants=Applicants()
+        applicants.user_id = itemA.id
+        applicants.username = itemA.username
+        applicants.email = itemA.email
+        applicants.status = itemB.status
+        query_applicants.append(applicants)
+    return render_template('view_posted_applicants.html', query_applicants=query_applicants, job_id=job_id)
+
+
+@app.route('/accepted/<job_id>/<userid>', methods=['GET','POST'])
+def accept(job_id, userid):
+    db.session.query(Associations_Application).filter_by(fk_job_id=job_id, fk_user_id=userid).update({'status':'Accepted'})
+    db.session.commit()
+    return redirect(request.referrer)
+
+@app.route('/rejected/<job_id>/<userid>', methods=['GET','POST'])
+def rejected(job_id, userid):
+    db.session.query(Associations_Application).filter_by(fk_job_id=job_id, fk_user_id=userid).update({'status':'Rejected'})
+    db.session.commit()
+    return redirect(request.referrer)
+
+#------------------- For Recrutiers and Administrators ----------------------------------------------#
+
+
 #-------------------------------------------------------------Jobs---------------------------------------------------------------#
                            
                          
