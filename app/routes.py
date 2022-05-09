@@ -226,29 +226,19 @@ def delete_user(user_id):
         is_recruiter = db.session.query(Recruiter.id).filter_by(fk_user_id=user_id).first()
         is_student = db.session.query(User.id).filter_by(id=user_id, role='student').first()
         if is_recruiter:
-            job_exist = db.session.query(Job.id).filter_by(fk_recruiter_id=user_id).all()
-            job_id = []
-            for item in job_exist:
-                job_id_2 = item.id
-                job_id.append(job_id_2)
-            for j in job_id:
-                db.session.query(Associations_Application).filter_by(fk_job_id=j).delete()
-            db.session.query(Job).filter_by(fk_recruiter_id=user_id).delete()
+            for item in db.session.query(Job).filter_by(fk_recruiter_id=is_recruiter.id):
+                db.session.query(Associations_Application).filter_by(fk_job_id=item.id).delete()
+            db.session.query(Job).filter_by(fk_recruiter_id=is_recruiter.id).delete()
             db.session.query(Recruiter).filter_by(fk_user_id=user_id).delete()
-            db.session.query(User).filter_by(id=user_id).delete()
             db.session.commit()
         elif is_student:
-            job_exist = db.session.query(Job.id).filter_by(fk_recruiter_id=user_id).all()
-            if job_exist:
-                #delete applications first
-                print('User Who Applied to Jobs Cannot Be Deleted!', file=sys.stderr)
-            else:
-                db.session.query(User).filter_by(id=user_id).delete()
-                db.session.commit()
+            db.session.query(Associations_Application).filter_by(fk_user_id=is_student.id).delete()
+            db.session.query(Upload).filter_by(user_id=user_id).delete()
+            db.session.query(User).filter_by(id=user_id).delete()   
+            db.session.commit()
         else:
             db.session.query(User).filter_by(id=user_id).delete()
             db.session.commit()
-
         # Job.query.filter(id=job_id).delete()
         return redirect(url_for('view_users'))
 
