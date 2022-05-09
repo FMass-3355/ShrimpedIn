@@ -23,11 +23,6 @@
                 {{ form.salary.label }}<br>
                 {{ form.salary(size=32, max=128) }}
             </p>
-
-            <p style="width: fit-content; margin: auto;">
-                {{ form.job_url.label(class="form-control-label") }}
-                {{ form.job_url(class="form-control form-control-md")}}
-            </p>
             
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_address.label }}<br>
@@ -48,8 +43,8 @@
                 {{ form.job_state.label(class="form-control-label") }}
                 {{ form.job_state(class="form-control form-control-md")}}
                 </p>
-            
-            <p href="#" style="width: fit-content; margin: auto; float: right;">
+            <br>
+            <p href="#" style="width: fit-content; margin: auto; ">
                 {{ form.submit(class="form-control form-control-md btn btn-primary") }}</p>
         
             {% with messages = get_flashed_messages(with_categories=true) %}

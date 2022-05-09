@@ -217,6 +217,58 @@ def add_user():
         print(all_usernames, file=sys.stderr)
         return render_template('add_user.html', form=form)
     return render_template('invalid_credentials.html')
+
+@app.route('/delete_user/<user_id>', methods=['GET', 'POST'])
+@login_required
+def delete_user(user_id):
+    form = RemoveUser()
+    if form.validate_on_submit():
+        is_recruiter = db.session.query(Recruiter.id).filter_by(fk_user_id=user_id).first()
+        is_student = db.session.query(User.id).filter_by(id=user_id, role='student').first()
+        if is_recruiter:
+            job_exist = db.session.query(Job.id).filter_by(fk_recruiter_id=user_id).all()
+            job_id = []
+            for item in job_exist:
+                job_id_2 = item.id
+                job_id.append(job_id_2)
+            for j in job_id:
+                db.session.query(Associations_Application).filter_by(fk_job_id=j).delete()
+            db.session.query(Job).filter_by(fk_recruiter_id=user_id).delete()
+            db.session.query(Recruiter).filter_by(fk_user_id=user_id).delete()
+            db.session.query(User).filter_by(id=user_id).delete()
+            db.session.commit()
+        elif is_student:
+            job_exist = db.session.query(Job.id).filter_by(fk_recruiter_id=user_id).all()
+            if job_exist:
+                #delete applications first
+                print('User Who Applied to Jobs Cannot Be Deleted!', file=sys.stderr)
+            else:
+                db.session.query(User).filter_by(id=user_id).delete()
+                db.session.commit()
+        else:
+            db.session.query(User).filter_by(id=user_id).delete()
+            db.session.commit()
+
+        # Job.query.filter(id=job_id).delete()
+        return redirect(url_for('view_users'))
+
+    return render_template('close_job.html', form=form)
+
+@app.route('/view_users', methods=['GET', 'POST'])
+def view_users():
+    query_users = []
+    # Rec_id = db.session.query(Recruiter.id).filter_by(fk_user_id=current_user.id)
+    if is_admin():
+        admin_id = current_user.id
+        for item in db.session.query(User).filter(User.id!=admin_id).all():
+            user = UserInfo()
+            user.user_id = item.id
+            user.username = item.username
+            user.email = item.email
+            user.role = item.role
+            query_users.append(user)
+        return render_template('view_users.html', query_users=query_users)
+    return render_template('invalid_credentials.html')
 #----------------------------------------------------------- Administrator Methods ------------------------------------------------------------#
 
 
@@ -573,6 +625,12 @@ def close_job(job_id):
     if form.validate_on_submit():
         # db.session.query(Job).filter_by(id=job_id).update({'job_title':j_title,'job_description':j_description,'job_url':j_url, 'job_salary':j_salary,'job_address':j_address,'job_city':j_city, 'job_state':j_state,'job_zipcode':j_zipcode})
         # # db.session.add(job_posting)
+        # application_exist = db.session.query(Associations_Application.id).filter_by(fk_user_id=current_user.id).all()
+        # query = dbsession.query(MyTable).filter(MyTable.name==u'john')
+        # application_exist = db.session.query(Associations_Application.id).filter_by(fk_job_id=job_id).all()
+        # if application_exist:
+        #     for a in application_exist:
+        db.session.query(Associations_Application).filter_by(fk_job_id=job_id).delete()
         db.session.query(Job).filter_by(id=job_id).delete()
         db.session.commit()
         # Job.query.filter(id=job_id).delete()

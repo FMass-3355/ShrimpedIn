@@ -94,6 +94,10 @@ class AccountRecovery(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
     submit = SubmitField('Recover Account')
+
+class RemoveUser(FlaskForm):
+    # job_id = IntegerField('Enter Job ID number', validators=[DataRequired()])
+    submit = SubmitField('Submit')
 #----------------------Account settings----------------------------------------------------#
 
 
