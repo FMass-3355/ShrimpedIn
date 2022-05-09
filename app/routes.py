@@ -58,12 +58,14 @@ def login():
     # Authenticated users are redirected to home page.
     if current_user.is_authenticated:
         return redirect(url_for('homepage'))
+        
     form = LoginForm()
     if form.validate_on_submit():
         # Query DB for user by username
         user = db.session.query(User).filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             print('Login failed', file=sys.stderr)
+            flash("wrong username/password")
             return redirect(url_for('login'))
         # login_user is a flask_login function that starts a session
         login_user(user)
@@ -142,8 +144,12 @@ def create_user():
             user.set_password(password)
             db.session.add(user)
             if role == 'recruiter': 
-                company = Company(company_name=company_name)
-                db.session.add(company)
+                Comp_exist = Company.query.filter_by(company_name=company_name).first()
+                if Comp_exist is None:
+                    company = Company(company_name=company_name)
+                    db.session.add(company)
+                else:
+                    company = db.session.query(Company.id).filter_by(company_name=company_name).first()
                 if (user is not None and company is not None) and Recruiter.query.filter_by(fk_user_id=user.id, fk_company_id=company.id).first() is None:
                     recruiter_Add=Recruiter(fk_user_id=user.id, fk_company_id=company.id)
                     db.session.add(recruiter_Add)
@@ -153,7 +159,6 @@ def create_user():
             db.session.commit()
             
             return redirect(url_for('login'))
-    
         else:
             # print("user already exists", file=sys.stderr)
             flash("user already exists")
@@ -182,14 +187,27 @@ def add_user():
             lname = form.lname.data
             mname = form.mname.data
             role = form.role.data
+            company_name = form.company_name.data 
             date_of_birth = form.date_of_birth.data
             
+
             email_exists = db.session.query(User).filter_by(email=email).first()
             user_exists = db.session.query(User).filter_by(username=username).first()   
             if (email_exists is None) and (user_exists is None):
                 user = User(username=username, email=email, role=role, fname=fname, lname=lname, mname=mname, date_of_birth=date_of_birth)
                 user.set_password(password)
                 db.session.add(user)
+                if role == 'recruiter': 
+                    Comp_exist = Company.query.filter_by(company_name=company_name).first()
+                    if Comp_exist is None:
+                        company = Company(company_name=company_name)
+                        db.session.add(company)
+                    else:
+                        company = db.session.query(Company.id).filter_by(company_name=company_name).first()
+                    if (user is not None and company is not None) and Recruiter.query.filter_by(fk_user_id=user.id, fk_company_id=company.id).first() is None:
+                        recruiter_Add=Recruiter(fk_user_id=user.id, fk_company_id=company.id)
+                        db.session.add(recruiter_Add)
+                        db.session.commit()
                 db.session.commit()
             else:
                 # print("user already exists", file=sys.stderr)
@@ -425,7 +443,8 @@ def add_job():
             job_city = form.job_city.data
             job_state = form.job_state.data
             job_zipcode = form.job_zipcode.data
-            job_posting = Job(job_title=job_title,fk_recruiter_id=Rec.id, company=Comp.company_name, job_description=description, job_salary=salary, job_address=job_address, job_city=job_city, job_state=job_state, job_zipcode=job_zipcode)
+            job_url = form.job_url.data
+            job_posting = Job(job_title=job_title,fk_recruiter_id=Rec.id, company=Comp.company_name, job_description=description, job_salary=salary, job_address=job_address, job_city=job_city, job_state=job_state, job_zipcode=job_zipcode, job_url=job_url)
             db.session.add(job_posting)
             db.session.commit()
             #all_jobs= db.session.query(Job.job_title).all()
@@ -496,7 +515,7 @@ def edit_jobs(job_id):
         #     jobs.job_zipcode = job_zipcode
         # db.session.query(Job).filter_by(id=job_id).update(job_title=j_title,fk_recruiter_id=current_user.id, job_description=j_description, job_url=j_url, job_salary=j_salary, job_address=j_address, job_city=j_city, job_state=j_state, job_zipcode=j_zipcode) 
         # {'status':'Accepted'}
-        db.session.query(Job).filter_by(id=job_id).update({'job_title':j_title,'fk_recruiter_id':current_user.id,'job_description':j_description,'job_url':j_url, 'job_salary':j_salary,'job_address':j_address,'job_city':j_city, 'job_state':j_state,'job_zipcode':j_zipcode})
+        db.session.query(Job).filter_by(id=job_id).update({'job_title':j_title,'job_description':j_description,'job_url':j_url, 'job_salary':j_salary,'job_address':j_address,'job_city':j_city, 'job_state':j_state,'job_zipcode':j_zipcode})
         # db.session.add(job_posting)
         db.session.commit()
 
@@ -504,7 +523,7 @@ def edit_jobs(job_id):
 
     return render_template('edit_jobs.html', form=form)
 
-@app.route('/view_editjob', methods=['GET', 'POST'])
+@app.route('/view_edit_job', methods=['GET', 'POST'])
 def view_edit_job():
     query_jobs = []
     Rec_id = db.session.query(Recruiter.id).filter_by(fk_user_id=current_user.id)
@@ -542,6 +561,35 @@ def apply_job(job_id):
 
             return render_template('application.html')
     return render_template('invalid_credentials.html')
+
+
+@app.route('/close_job/<job_id>', methods=['GET', 'POST'])
+@login_required
+def close_job(job_id):
+    form = RemoveJob()
+    # fk_job_id = job_id
+    # job_exists = db.session.query(Associations_Application.id).filter_by(fk_user_id=current_user.id, fk_job_id=fk_job_id).first()
+    # jobs = db.session.query(Job).filter(Job.fk_recruiter_id==current_user.id, id==job_id).first()
+    if form.validate_on_submit():
+        # db.session.query(Job).filter_by(id=job_id).update({'job_title':j_title,'job_description':j_description,'job_url':j_url, 'job_salary':j_salary,'job_address':j_address,'job_city':j_city, 'job_state':j_state,'job_zipcode':j_zipcode})
+        # # db.session.add(job_posting)
+        db.session.query(Job).filter_by(id=job_id).delete()
+        db.session.commit()
+        # Job.query.filter(id=job_id).delete()
+        return redirect(url_for('view_close_job'))
+
+    return render_template('close_job.html', form=form)
+
+@app.route('/view_close_job', methods=['GET', 'POST'])
+def view_close_job():
+    query_jobs = []
+    Rec_id = db.session.query(Recruiter.id).filter_by(fk_user_id=current_user.id)
+    for item in db.session.query(Job).filter(Job.fk_recruiter_id==Rec_id):
+        job = JobInfo2()
+        job.job_id = item.id
+        job.title = item.job_title
+        query_jobs.append(job)
+    return render_template('view_close_job.html', query_jobs=query_jobs)
 #API / SEARCH (API is on top of the file)
 #-----------------------API SECTION------------------------------------------------------------#
 @app.route('/search', methods=['GET', 'POST'])

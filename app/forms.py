@@ -18,6 +18,7 @@ class AddUserForm(FlaskForm):
     fname = StringField('First Name', validators=[DataRequired()])
     lname = StringField('Last Name', validators=[DataRequired()])
     mname = StringField('MI')
+    company_name = StringField('Company (Not relevant if not recruiter)')
     profile_pic = FileField('Profile Picture')
     date_of_birth = DateField('Date of Birth (YYYY/MM/DD) (In Progress)')
     submit = SubmitField('Create Account')
@@ -60,7 +61,7 @@ class CreateUserForm(FlaskForm):
     fname = StringField('First Name', validators=[DataRequired()])#length(min=2, max=64) Testing stuff with min and max length
     lname = StringField('Last Name', validators=[DataRequired()])
     mname = StringField('MI')
-    company_name = StringField('Company')
+    company_name = StringField('Company (Not relevant if not recruiter)')
     profile_pic = FileField('Profile Picture')
     date_of_birth = DateField('Date of Birth')
     submit = SubmitField('Create Account')
@@ -102,6 +103,7 @@ class AddJob(FlaskForm):
     job_title = StringField('Job Title', validators=[DataRequired()])
     salary = DecimalField('Salary Ammount Per Year', places=2)
     job_description = StringField('Description', validators=[DataRequired()])
+    job_url = StringField('Job URL')
     job_address = StringField('Job Location Address')
     job_city = StringField('Job Location City')
     job_state = SelectField('State', choices=['', 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 
@@ -122,7 +124,7 @@ class EditJob(FlaskForm):
     job_title = StringField('Job Title', validators=[DataRequired()])
     job_description = StringField('Job Description', validators=[DataRequired()])
     job_url = StringField('Job URL', validators=[DataRequired()])
-    job_salary = DecimalField('Salary Ammount Per Year', places=2)
+    job_salary = DecimalField('Salary Amount Per Year', places=2)
     job_address = StringField('Job Location Address')
     job_city = StringField('Job Location City')
     job_state = SelectField('State', choices=['', 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 
@@ -134,7 +136,7 @@ class EditJob(FlaskForm):
     submit = SubmitField('Submit')
 
 class RemoveJob(FlaskForm):
-    job_id = IntegerField('Enter Job ID number', validators=[DataRequired()])
+    # job_id = IntegerField('Enter Job ID number', validators=[DataRequired()])
     submit = SubmitField('Submit')
 #----------------job forms------------------#
 

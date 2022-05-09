@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="p-3 mb-2">
+    <div class="container" style="padding-bottom: 4%; padding-top: 3%;">
+        <!-- <img src="{{ image_file }}" width="220px" height="220px" \
+        style="display:block;margin:auto; padding: auto; border: 2.5px solid #f172a1; border-radius: 50%;" class="center"><br> -->
+        <form action="" method="post" novalidate style="margin: auto; width: fit-content; ">
+            {{ form.hidden_tag() }}
+            <p href="/view_posted_jobs" style="width: fit-content; margin: auto; float: right;">
+                {{ form.submit(class="form-control form-control-md btn btn-primary") }}</p>
+            <!-- <button class="form-control form-control-md btn btn-secondary" href="/view_posted_jobs" \
+            style="float: left; width: fit-content; margin: auto;">Back</button> -->
+        </form>
+        
+    </div>
+</section>
+{% endblock %}

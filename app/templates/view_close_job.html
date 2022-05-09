@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+    <table>
+        <thead>
+            <th>Job Identification</th>
+            <th>Job Title</th>
+            <th>Check Applicants</th>
+        </thead>
+        <tbody>
+            {% for info in query_jobs %}
+            <tr>
+                <td>{{ info.job_id }}</td>
+                <td>{{ info.title }}</td>
+                <td><a href="/close_job/{{ info.job_id }}">Close Job</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
