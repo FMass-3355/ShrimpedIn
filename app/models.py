@@ -129,7 +129,7 @@ class Job(db.Model):
 class Associations_Application(db.Model):
    __tablename__ = 'associations_applications'
    id = db.Column(db.Integer, primary_key=True)
-   fk_job_id=db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=True) #MAKE FALSE AFTER TESTING
+   fk_job_id=db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False) #MAKE FALSE AFTER TESTING
    fk_user_id=db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
    status = db.Column(db.String(64), default="Pending")
 #    job_id=relationship('',cascade='')
@@ -140,7 +140,12 @@ class Associations_Application(db.Model):
 
 #-----Association table (M:N) 0-----#
 
-
+class UserInfo:
+    def __UserInfo__(user_id,username,email,role):
+        user_id = user_id
+        username = username
+        email = email
+        role = role
 
 # API Sprint 3
 #NOT PART OF DATABASE MODEL
