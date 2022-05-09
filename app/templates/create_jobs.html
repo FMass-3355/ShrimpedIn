@@ -23,6 +23,11 @@
                 {{ form.salary.label }}<br>
                 {{ form.salary(size=32, max=128) }}
             </p>
+
+            <p style="width: fit-content; margin: auto;">
+                {{ form.job_url.label(class="form-control-label") }}
+                {{ form.job_url(class="form-control form-control-md")}}
+            </p>
             
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_address.label }}<br>
