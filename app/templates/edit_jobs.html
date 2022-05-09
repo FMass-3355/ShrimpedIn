@@ -9,35 +9,35 @@
             {{ form.hidden_tag() }}
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_title.label(class="form-control-label") }}
-                {{ form.job_title(class="form-control form-control-md", value=current_user.fname)}}
+                {{ form.job_title(class="form-control form-control-md", value=job_title)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_description.label(class="form-control-label") }}
-                {{ form.job_description(class="form-control form-control-md", value=current_user.lname)}}
+                {{ form.job_description(class="form-control form-control-md", value=job_description)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_salary.label(class="form-control-label") }}
-                {{ form.job_salary(class="form-control form-control-md", value=current_user.mname)}}
+                {{ form.job_salary(class="form-control form-control-md", value=job_salary)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_url.label(class="form-control-label") }}
-                {{ form.job_url(class="form-control form-control-md")}}
+                {{ form.job_url(class="form-control form-control-md", value=job_url)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_address.label(class="form-control-label") }}
-                {{ form.job_address(class="form-control form-control-md", value=current_user.address)}}
+                {{ form.job_address(class="form-control form-control-md", value=job_address)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_city.label(class="form-control-label") }}
-                {{ form.job_city(class="form-control form-control-md", value=current_user.city)}}
+                {{ form.job_city(class="form-control form-control-md", value=job_city)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_state.label(class="form-control-label") }}
-                {{ form.job_state(class="form-control form-control-md")}}
+                {{ form.job_state(class="form-control form-control-md", value=job_state)}}
             </p>
             <p style="width: fit-content; margin: auto;">
                 {{ form.job_zipcode.label(class="form-control-label") }}
-                {{ form.job_zipcode(class="form-control form-control-md", value=current_user.zip_code)}}
+                {{ form.job_zipcode(class="form-control form-control-md", value=job_zipcode)}}
             </p><br>
             <p href="/view_posted_jobs" style="width: fit-content; margin: auto; float: right;">
                 {{ form.submit(class="form-control form-control-md btn btn-primary") }}</p>
