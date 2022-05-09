@@ -209,6 +209,7 @@ def add_user():
                         db.session.add(recruiter_Add)
                         db.session.commit()
                 db.session.commit()
+                flash('User added successfully')
             else:
                 # print("user already exists", file=sys.stderr)
                 flash("user already exists")
@@ -230,6 +231,7 @@ def delete_user(user_id):
                 db.session.query(Associations_Application).filter_by(fk_job_id=item.id).delete()
             db.session.query(Job).filter_by(fk_recruiter_id=is_recruiter.id).delete()
             db.session.query(Recruiter).filter_by(fk_user_id=user_id).delete()
+            db.session.query(User).filter_by(id=user_id).delete()
             db.session.commit()
         elif is_student:
             db.session.query(Associations_Application).filter_by(fk_user_id=is_student.id).delete()
@@ -500,6 +502,22 @@ def add_job():
 @login_required
 def edit_jobs(job_id):
     form = EditJob()
+    job_zipcode= db.session.query(Job.job_zipcode).filter_by(id=job_id).first()
+    job_address= db.session.query(Job.job_address).filter_by(id=job_id).first()
+    job_zipcode = job_zipcode[0]
+    job_address = job_address[0]
+    job_title= db.session.query(Job.job_title).filter_by(id=job_id).first()
+    job_description= db.session.query(Job.job_description).filter_by(id=job_id).first()
+    job_title = job_title[0]
+    job_description = job_description[0]
+    job_url= db.session.query(Job.job_url).filter_by(id=job_id).first()
+    job_salary= db.session.query(Job.job_salary).filter_by(id=job_id).first()
+    job_url = job_url[0]
+    job_salary = job_salary[0]
+    job_city= db.session.query(Job.job_city).filter_by(id=job_id).first()
+    job_state= db.session.query(Job.job_state).filter_by(id=job_id).first()
+    job_city = job_city[0]
+    job_state = job_state[0]
     # fk_job_id = job_id
     # job_exists = db.session.query(Associations_Application.id).filter_by(fk_user_id=current_user.id, fk_job_id=fk_job_id).first()
     # jobs = db.session.query(Job).filter(Job.fk_recruiter_id==current_user.id, id==job_id).first()
@@ -563,7 +581,7 @@ def edit_jobs(job_id):
 
         return redirect(url_for('view_edit_job'))
 
-    return render_template('edit_jobs.html', form=form)
+    return render_template('edit_jobs.html', form=form, job_zipcode=job_zipcode, job_address=job_address, job_title=job_title, job_description=job_description, job_url=job_url, job_salary=job_salary, job_city=job_city, job_state=job_state)
 
 @app.route('/view_edit_job', methods=['GET', 'POST'])
 def view_edit_job():
@@ -600,7 +618,7 @@ def apply_job(job_id):
             else:
                 flash('You need to upload your resume before applying for a job!')
                 # print(job_id, file = sys.stdout)
-
+            flash('You have successfully applied for the job!')
             return render_template('application.html')
     return render_template('invalid_credentials.html')
 
