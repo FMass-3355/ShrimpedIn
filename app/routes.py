@@ -1,5 +1,6 @@
 #Imports
 from operator import methodcaller
+#from app import app as appl
 from app import app
 #-------environment-------#
 from dotenv import load_dotenv
@@ -518,9 +519,6 @@ def edit_jobs(job_id):
     job_state= db.session.query(Job.job_state).filter_by(id=job_id).first()
     job_city = job_city[0]
     job_state = job_state[0]
-    # fk_job_id = job_id
-    # job_exists = db.session.query(Associations_Application.id).filter_by(fk_user_id=current_user.id, fk_job_id=fk_job_id).first()
-    # jobs = db.session.query(Job).filter(Job.fk_recruiter_id==current_user.id, id==job_id).first()
     if form.validate_on_submit():
         #---------------------------# 
         j_title = form.job_title.data
@@ -534,49 +532,7 @@ def edit_jobs(job_id):
         j_zipcode = form.job_zipcode.data
         
         #---------------------------# 
-        # if job_title == '':
-        #     jobs.job_title = jobs.job_title
-        # else:
-        #     jobs.job_title = job_title
-            
-        # if job_description == '':
-        #     jobs.job_description = jobs.job_description
-        # else:
-        #     jobs.job_description = job_description
-
-        # if job_salary == '':
-        #     jobs.job_salary = jobs.job_salary
-        # else:
-        #     jobs.job_salary = job_salary
-
-        # if  job_url == '':
-        #     jobs.job_url = jobs.job_url
-        # else:
-        #     jobs.job_url = job_url
-
-        # if job_address == '':
-        #     jobs.job_address = jobs.job_address
-        # else:
-        #     jobs.job_address = job_address
-
-        # if job_city == '':
-        #     jobs.job_city = jobs.job_city
-        # else:
-        #     jobs.job_city = job_city
-
-        # if job_state == '':
-        #     jobs.job_state = jobs.job_state
-        # else:
-        #     jobs.job_state = job_state
-
-        # if job_zipcode == '':
-        #     jobs.job_zipcode = jobs.job_zipcode
-        # else:
-        #     jobs.job_zipcode = job_zipcode
-        # db.session.query(Job).filter_by(id=job_id).update(job_title=j_title,fk_recruiter_id=current_user.id, job_description=j_description, job_url=j_url, job_salary=j_salary, job_address=j_address, job_city=j_city, job_state=j_state, job_zipcode=j_zipcode) 
-        # {'status':'Accepted'}
         db.session.query(Job).filter_by(id=job_id).update({'job_title':j_title,'job_description':j_description,'job_url':j_url, 'job_salary':j_salary,'job_address':j_address,'job_city':j_city, 'job_state':j_state,'job_zipcode':j_zipcode})
-        # db.session.add(job_posting)
         db.session.commit()
 
         return redirect(url_for('view_edit_job'))
